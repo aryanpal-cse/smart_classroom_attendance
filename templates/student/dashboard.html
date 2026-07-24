@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Student Dashboard · Smart Classroom
+{% endblock %}
+
+{% block content %}
+<section class="dashboard-page">
+    <div class="dashboard-container">
+        <div class="dashboard-heading">
+            <div>
+                <span class="role-badge role-student">
+                    Student Panel
+                </span>
+
+                <h1>
+                    Welcome,
+                    {{ student.full_name if student else current_user.username }}
+                </h1>
+
+                <p>
+                    View your timetable and complete attendance verification.
+                </p>
+            </div>
+        </div>
+
+        <div class="profile-information-card">
+            <div>
+                <span class="profile-label">Roll Number</span>
+                <strong>
+                    {{ student.roll_number if student else "Not available" }}
+                </strong>
+            </div>
+
+            <div>
+                <span class="profile-label">Class</span>
+                <strong>
+                    {% if student and student.class_section %}
+                        {{ student.class_section.name }}
+                        Section {{ student.class_section.section }}
+                    {% else %}
+                        Not available
+                    {% endif %}
+                </strong>
+            </div>
+
+            <div>
+                <span class="profile-label">Face Registration</span>
+                <strong>
+                    {% if student and student.face_registered %}
+                        Registered
+                    {% else %}
+                        Not Registered
+                    {% endif %}
+                </strong>
+            </div>
+        </div>
+
+        <div class="dashboard-card">
+            <div class="dashboard-card-heading">
+                <h2>Student Modules</h2>
+
+                <p>
+                    Attendance features will be enabled in future phases.
+                </p>
+            </div>
+
+            <div class="module-grid">
+                <div class="module-card">
+                    <h3>Today's Timetable</h3>
+                    <p>View scheduled subjects and class timings.</p>
+                    <span class="development-status">Coming in Phase 6</span>
+                </div>
+
+                <div class="module-card">
+                    <h3>Enter Class Code</h3>
+                    <p>Validate the active temporary class-session code.</p>
+                    <span class="development-status">Coming later</span>
+                </div>
+
+                <div class="module-card">
+                    <h3>Face Verification</h3>
+                    <p>Verify identity using the locally connected camera.</p>
+                    <span class="development-status">Coming later</span>
+                </div>
+
+                <div class="module-card">
+                    <h3>Attendance History</h3>
+                    <p>View recorded attendance for each subject.</p>
+                    <span class="development-status">Coming later</span>
+                </div>
+
+                <div class="module-card">
+                    <h3>Attendance Percentage</h3>
+                    <p>View overall and subject-wise attendance percentages.</p>
+                    <span class="development-status">Coming later</span>
+                </div>
+
+                <div class="module-card">
+                    <h3>Low Attendance Warning</h3>
+                    <p>Receive a warning when attendance falls below 75%.</p>
+                    <span class="development-status">Coming later</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

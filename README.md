@@ -80,3 +80,37 @@ The local database is:
 
 ```text
 instance/attendance.db
+### Phase 3 — Authentication and Role-Based Access
+
+Completed:
+
+- Local username and password authentication
+- Password-hash verification
+- Flask-Login session management
+- Flask-WTF CSRF protection
+- Admin, teacher and student login
+- Role-based dashboard redirection
+- Protected Admin Panel
+- Protected Teacher Panel
+- Protected Student Panel
+- Secure POST logout
+- Inactive-account validation
+- Invalid-login protection
+- Unauthenticated-user redirection
+- 403 access-denied page
+- 404 page-not-found page
+- Five automated authentication tests
+
+Verified demonstration accounts:
+
+- Admin: `admin`
+- Teacher: `teacher1`
+- Student: `student1`
+
+Authentication tests completed:
+
+- Admin login and authorization — Passed
+- Teacher login and authorization — Passed
+- Student login and authorization — Passed
+- Incorrect-password rejection — Passed
+- Logged-out-user redirection — Passed

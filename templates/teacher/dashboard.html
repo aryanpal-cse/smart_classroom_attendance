@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Teacher Dashboard · Smart Classroom
+{% endblock %}
+
+{% block content %}
+<section class="dashboard-page">
+    <div class="dashboard-container">
+        <div class="dashboard-heading">
+            <div>
+                <span class="role-badge role-teacher">
+                    Teacher Panel
+                </span>
+
+                <h1>
+                    Welcome,
+                    {{ teacher.full_name if teacher else current_user.username }}
+                </h1>
+
+                <p>
+                    View scheduled classes and manage attendance sessions.
+                </p>
+            </div>
+        </div>
+
+        <div class="profile-information-card">
+            <div>
+                <span class="profile-label">Employee ID</span>
+                <strong>
+                    {{ teacher.employee_id if teacher else "Not available" }}
+                </strong>
+            </div>
+
+            <div>
+                <span class="profile-label">Department</span>
+                <strong>
+                    {{ teacher.department if teacher else "Not available" }}
+                </strong>
+            </div>
+
+            <div>
+                <span class="profile-label">Account Status</span>
+                <strong>Active</strong>
+            </div>
+        </div>
+
+        <div class="dashboard-card">
+            <div class="dashboard-card-heading">
+                <h2>Teacher Modules</h2>
+
+                <p>
+                    Class-session features will be implemented incrementally.
+                </p>
+            </div>
+
+            <div class="module-grid">
+                <div class="module-card">
+                    <h3>Today's Timetable</h3>
+                    <p>View classes assigned for the current day.</p>
+                    <span class="development-status">Coming in Phase 5</span>
+                </div>
+
+                <div class="module-card">
+                    <h3>Start Scheduled Class</h3>
+                    <p>Validate the timetable and begin a class session.</p>
+                    <span class="development-status">Coming later</span>
+                </div>
+
+                <div class="module-card">
+                    <h3>Dynamic Class Code</h3>
+                    <p>Generate and display a temporary attendance code.</p>
+                    <span class="development-status">Coming later</span>
+                </div>
+
+                <div class="module-card">
+                    <h3>Live Attendance</h3>
+                    <p>Monitor recognized, pending and manual-review students.</p>
+                    <span class="development-status">Coming later</span>
+                </div>
+
+                <div class="module-card">
+                    <h3>Manual Review</h3>
+                    <p>Approve or reject exceptional verification failures.</p>
+                    <span class="development-status">Coming later</span>
+                </div>
+
+                <div class="module-card">
+                    <h3>Attendance History</h3>
+                    <p>Review previously completed class sessions.</p>
+                    <span class="development-status">Coming later</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

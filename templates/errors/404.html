@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Page Not Found · Smart Classroom
+{% endblock %}
+
+{% block content %}
+<section class="error-page">
+    <div class="error-card">
+        <span class="error-code">404</span>
+
+        <h1>Page Not Found</h1>
+
+        <p>
+            The page you requested does not exist or may have been moved.
+        </p>
+
+        <a
+            class="primary-button error-action"
+            href="{{ url_for('home') }}"
+        >
+            Return to Home
+        </a>
+    </div>
+</section>
+{% endblock %}
