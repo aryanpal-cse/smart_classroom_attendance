@@ -1,0 +1,207 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Teacher Management · Smart Classroom
+{% endblock %}
+
+{% block content %}
+<section class="dashboard-page">
+    <div class="dashboard-container">
+
+        <!-- Page Heading -->
+        <div class="page-heading-row">
+            <div>
+                <span class="role-badge role-admin">
+                    Administrator Panel
+                </span>
+
+                <h1>Teacher Management</h1>
+
+                <p>
+                    View, add and update teacher accounts,
+                    employee information, departments and account status.
+                </p>
+            </div>
+
+            <div class="page-heading-actions">
+                <a
+                    class="secondary-button"
+                    href="{{ url_for('admin.dashboard') }}"
+                >
+                    Back to Dashboard
+                </a>
+
+                <a
+                    class="primary-button page-action-button"
+                    href="{{ url_for('admin.add_teacher') }}"
+                >
+                    Add Teacher
+                </a>
+            </div>
+        </div>
+
+        <!-- Teacher Records -->
+        <div class="dashboard-card">
+            <div class="dashboard-card-heading">
+                <h2>Registered Teachers</h2>
+
+                <p>
+                    Total teacher records:
+                    <strong>{{ teachers|length }}</strong>
+                </p>
+            </div>
+
+            {% if teachers %}
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Employee ID</th>
+                                <th>Teacher Name</th>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Department</th>
+                                <th>Assignments</th>
+                                <th>Account Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for teacher in teachers %}
+                                <tr>
+                                    <!-- Employee ID -->
+                                    <td>
+                                        <strong>
+                                            {{ teacher.employee_id }}
+                                        </strong>
+                                    </td>
+
+                                    <!-- Teacher Name -->
+                                    <td>
+                                        {{ teacher.full_name }}
+                                    </td>
+
+                                    <!-- Username -->
+                                    <td>
+                                        {% if teacher.user %}
+                                            {{ teacher.user.username }}
+                                        {% else %}
+                                            Not available
+                                        {% endif %}
+                                    </td>
+
+                                    <!-- Email -->
+                                    <td>
+                                        {% if teacher.email %}
+                                            {{ teacher.email }}
+                                        {% else %}
+                                            Not provided
+                                        {% endif %}
+                                    </td>
+
+                                    <!-- Department -->
+                                    <td>
+                                        {% if teacher.department %}
+                                            {{ teacher.department }}
+                                        {% else %}
+                                            Not provided
+                                        {% endif %}
+                                    </td>
+
+                                    <!-- Teaching Assignments -->
+                                    <td>
+                                        {{ teacher.teaching_assignments|length }}
+                                    </td>
+
+                                    <!-- Account Status -->
+                                    <td>
+                                        {% if teacher.user
+                                              and teacher.user.is_active %}
+                                            <span
+                                                class="
+                                                    table-status
+                                                    status-active
+                                                "
+                                            >
+                                                Active
+                                            </span>
+                                        {% else %}
+                                            <span
+                                                class="
+                                                    table-status
+                                                    status-inactive
+                                                "
+                                            >
+                                                Inactive
+                                            </span>
+                                        {% endif %}
+                                    </td>
+
+                                    <!-- Teacher Actions -->
+                                    <td>
+                                        <div class="table-action-group">
+                                            <a
+                                                class="table-action-link"
+                                                href="{{ url_for(
+                                                    'admin.edit_teacher',
+                                                    teacher_id=teacher.id
+                                                ) }}"
+                                            >
+                                                Edit
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <!-- Empty Teacher List -->
+                <div class="empty-state">
+                    <h3>No Teachers Found</h3>
+
+                    <p>
+                        No teacher records are currently available.
+                        Add the first teacher using the button below.
+                    </p>
+
+                    <a
+                        class="
+                            primary-button
+                            empty-state-button
+                        "
+                        href="{{ url_for('admin.add_teacher') }}"
+                    >
+                        Add First Teacher
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Current Functionality -->
+        <div class="demo-account-note">
+            <h2>Teacher Management Status</h2>
+
+            <p>
+                Teacher records on this page are loaded directly
+                from the local SQLite database.
+            </p>
+
+            <p>
+                The administrator can add teachers, edit employee
+                and department details, change usernames, reset
+                passwords and activate or deactivate accounts
+                through the Edit Teacher page.
+            </p>
+
+            <p>
+                Teaching assignments will be managed separately
+                in a later phase.
+            </p>
+        </div>
+
+    </div>
+</section>
+{% endblock %}

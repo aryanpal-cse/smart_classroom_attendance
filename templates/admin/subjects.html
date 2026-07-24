@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Subject Management · Smart Classroom
+{% endblock %}
+
+{% block content %}
+<section class="dashboard-page">
+    <div class="dashboard-container">
+
+        <div class="page-heading-row">
+            <div>
+                <span class="role-badge role-admin">
+                    Administrator Panel
+                </span>
+
+                <h1>Subject Management</h1>
+
+                <p>
+                    View academic subjects, subject codes,
+                    semesters and active status.
+                </p>
+            </div>
+
+            <div class="page-heading-actions">
+                <a
+                    class="secondary-button"
+                    href="{{ url_for('admin.dashboard') }}"
+                >
+                    Back to Dashboard
+                </a>
+
+             <a
+    class="primary-button page-action-button"
+    href="{{ url_for('admin.add_subject') }}"
+>
+    Add Subject
+</a>  
+            </div>
+        </div>
+
+        <div class="dashboard-card">
+            <div class="dashboard-card-heading">
+                <h2>Registered Subjects</h2>
+
+                <p>
+                    Total subject records:
+                    <strong>{{ subjects|length }}</strong>
+                </p>
+            </div>
+
+            {% if subjects %}
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Subject Code</th>
+                                <th>Subject Name</th>
+                                <th>Semester</th>
+                                <th>Status</th>
+                                <th>Teaching Assignments</th>
+                                <th>Student Enrolments</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for subject in subjects %}
+                                <tr>
+                                    <td>
+                                        <strong>
+                                            {{ subject.code }}
+                                        </strong>
+                                    </td>
+
+                                    <td>
+                                        {{ subject.name }}
+                                    </td>
+
+                                    <td>
+                                        Semester {{ subject.semester }}
+                                    </td>
+
+                                    <td>
+                                        {% if subject.is_active %}
+                                            <span
+                                                class="
+                                                    table-status
+                                                    status-active
+                                                "
+                                            >
+                                                Active
+                                            </span>
+                                        {% else %}
+                                            <span
+                                                class="
+                                                    table-status
+                                                    status-inactive
+                                                "
+                                            >
+                                                Inactive
+                                            </span>
+                                        {% endif %}
+                                    </td>
+
+                                    <td>
+                                        {{ subject.teaching_assignments|length }}
+                                    </td>
+
+                                    <td>
+                                        {{ subject.enrollments|length }}
+                                    </td>
+
+                                    <td>
+                                       <a
+                                            class="table-action-link"
+                                            href="{{ url_for(
+                                                'admin.edit_subject',
+                                                 subject_id=subject.id
+                                            ) }}"
+                                 >
+                                            Edit
+                                 </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <h3>No Subjects Found</h3>
+
+                    <p>
+                        Subject records will appear here after they
+                        are added to the database.
+                    </p>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="demo-account-note">
+            <h2>Subject Management Status</h2>
+
+            <p>
+                This page reads actual subject records, teaching
+                assignment totals and enrolment totals from SQLite.
+            </p>
+
+            <p>
+                Adding, editing and activating or deactivating
+                subjects will be implemented in the next steps.
+            </p>
+        </div>
+
+    </div>
+</section>
+{% endblock %}

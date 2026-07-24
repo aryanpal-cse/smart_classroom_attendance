@@ -1,0 +1,210 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Add Student · Smart Classroom
+{% endblock %}
+
+{% block content %}
+<section class="dashboard-page">
+    <div class="form-page-container">
+
+        <div class="page-heading-row">
+            <div>
+                <span class="role-badge role-admin">
+                    Administrator Panel
+                </span>
+
+                <h1>Add Student</h1>
+
+                <p>
+                    Create a local student account and academic profile.
+                </p>
+            </div>
+
+            <a
+                class="primary-button page-action-button"
+                href="{{ url_for('admin.student_list') }}"
+            >
+                Back to Students
+            </a>
+        </div>
+
+        <div class="management-form-card">
+            {% if class_count == 0 %}
+                <div class="flash-message flash-warning">
+                    No active class section is available.
+                    Create or activate a class before adding students.
+                </div>
+            {% endif %}
+
+            <form
+                method="POST"
+                action="{{ url_for('admin.add_student') }}"
+                class="management-form"
+                novalidate
+            >
+                {{ form.hidden_tag() }}
+
+                <div class="form-section">
+                    <div class="form-section-heading">
+                        <h2>Login Information</h2>
+
+                        <p>
+                            These details will be used by the student
+                            to access the Student Panel.
+                        </p>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            {{ form.username.label(class="form-label") }}
+
+                            {{ form.username(
+                                class="form-control",
+                                placeholder="Example: student11",
+                                autocomplete="off"
+                            ) }}
+
+                            {% for error in form.username.errors %}
+                                <p class="form-error">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form.password.label(class="form-label") }}
+
+                            {{ form.password(
+                                class="form-control",
+                                placeholder="Minimum 8 characters",
+                                autocomplete="new-password"
+                            ) }}
+
+                            {% for error in form.password.errors %}
+                                <p class="form-error">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form.confirm_password.label(
+                                class="form-label"
+                            ) }}
+
+                            {{ form.confirm_password(
+                                class="form-control",
+                                placeholder="Enter password again",
+                                autocomplete="new-password"
+                            ) }}
+
+                            {% for error in form.confirm_password.errors %}
+                                <p class="form-error">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <div class="form-section-heading">
+                        <h2>Academic Information</h2>
+
+                        <p>
+                            Enter the student’s college and class details.
+                        </p>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            {{ form.roll_number.label(class="form-label") }}
+
+                            {{ form.roll_number(
+                                class="form-control",
+                                placeholder="Example: AIML-011"
+                            ) }}
+
+                            {% for error in form.roll_number.errors %}
+                                <p class="form-error">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form.full_name.label(class="form-label") }}
+
+                            {{ form.full_name(
+                                class="form-control",
+                                placeholder="Enter student full name"
+                            ) }}
+
+                            {% for error in form.full_name.errors %}
+                                <p class="form-error">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form.email.label(class="form-label") }}
+
+                            {{ form.email(
+                                class="form-control",
+                                placeholder="Optional email address",
+                                type="email"
+                            ) }}
+
+                            {% for error in form.email.errors %}
+                                <p class="form-error">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form.class_id.label(class="form-label") }}
+
+                            {{ form.class_id(class="form-control") }}
+
+                            {% for error in form.class_id.errors %}
+                                <p class="form-error">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="account-option-card">
+                    <label class="checkbox-label">
+                        {{ form.is_active() }}
+
+                        <span>
+                            {{ form.is_active.label.text }}
+                        </span>
+                    </label>
+
+                    <p>
+                        An inactive account cannot log in until an
+                        administrator activates it.
+                    </p>
+                </div>
+
+                <div class="form-actions">
+                    <a
+                        class="secondary-button"
+                        href="{{ url_for('admin.student_list') }}"
+                    >
+                        Cancel
+                    </a>
+
+                    {{ form.submit(
+                        class="primary-button",
+                        disabled=(class_count == 0)
+                    ) }}
+                </div>
+            </form>
+        </div>
+
+        <div class="demo-account-note">
+            <h2>Privacy Note</h2>
+
+            <p>
+                Face images are not collected on this page.
+                Face registration will be performed separately during
+                the face-enrolment phase.
+            </p>
+        </div>
+
+    </div>
+</section>
+{% endblock %}

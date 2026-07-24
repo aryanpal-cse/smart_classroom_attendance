@@ -1,99 +1,15 @@
-{% extends "base.html" %}
+<article class="module-card">
+    <h3>Class Sections</h3>
 
-{% block title %}
-    Admin Dashboard · Smart Classroom
-{% endblock %}
+    <p>
+        Manage programmes, sections, semesters
+        and academic-year information.
+    </p>
 
-{% block content %}
-<section class="dashboard-page">
-    <div class="dashboard-container">
-        <div class="dashboard-heading">
-            <div>
-                <span class="role-badge role-admin">
-                    Administrator Panel
-                </span>
-
-                <h1>Admin Dashboard</h1>
-
-                <p>
-                    Manage academic records, attendance and system settings.
-                </p>
-            </div>
-        </div>
-
-        <div class="dashboard-summary-grid">
-            <article class="summary-card">
-                <span class="summary-label">Students</span>
-                <strong>10</strong>
-                <p>Demo student records</p>
-            </article>
-
-            <article class="summary-card">
-                <span class="summary-label">Teachers</span>
-                <strong>2</strong>
-                <p>Demo teacher records</p>
-            </article>
-
-            <article class="summary-card">
-                <span class="summary-label">Subjects</span>
-                <strong>3</strong>
-                <p>Semester III subjects</p>
-            </article>
-
-            <article class="summary-card">
-                <span class="summary-label">Class Sections</span>
-                <strong>1</strong>
-                <p>CSE-AIML Section A</p>
-            </article>
-        </div>
-
-        <div class="dashboard-card">
-            <div class="dashboard-card-heading">
-                <h2>Administration Modules</h2>
-
-                <p>
-                    These modules will be activated during Phase 4.
-                </p>
-            </div>
-
-            <div class="module-grid">
-                <div class="module-card">
-                    <h3>Student Management</h3>
-                    <p>Add, edit, activate and deactivate student accounts.</p>
-                    <span class="development-status">Coming in Phase 4</span>
-                </div>
-
-                <div class="module-card">
-                    <h3>Teacher Management</h3>
-                    <p>Add and maintain teacher profiles and assignments.</p>
-                    <span class="development-status">Coming in Phase 4</span>
-                </div>
-
-                <div class="module-card">
-                    <h3>Subjects and Classes</h3>
-                    <p>Manage subjects, sections and academic information.</p>
-                    <span class="development-status">Coming in Phase 4</span>
-                </div>
-
-                <div class="module-card">
-                    <h3>Timetable</h3>
-                    <p>Create and edit the weekly teaching schedule.</p>
-                    <span class="development-status">Coming later</span>
-                </div>
-
-                <div class="module-card">
-                    <h3>Attendance Records</h3>
-                    <p>View attendance and manual-review audit information.</p>
-                    <span class="development-status">Coming later</span>
-                </div>
-
-                <div class="module-card">
-                    <h3>Analytics and Reports</h3>
-                    <p>View attendance percentages and generate reports.</p>
-                    <span class="development-status">Coming later</span>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-{% endblock %}
+    <a
+        class="module-action-link"
+        href="{{ url_for('admin.class_list') }}"
+    >
+        Open Class Management
+    </a>
+</article>

@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Edit Class Section · Smart Classroom
+{% endblock %}
+
+{% block content %}
+<section class="dashboard-page">
+    <div class="form-page-container">
+
+        <div class="page-heading-row">
+            <div>
+                <span class="role-badge role-admin">
+                    Administrator Panel
+                </span>
+
+                <h1>Edit Class Section</h1>
+
+                <p>
+                    Update
+                    {{ class_section.name }}
+                    Section {{ class_section.section }}.
+                </p>
+            </div>
+
+            <a
+                class="secondary-button"
+                href="{{ url_for('admin.class_list') }}"
+            >
+                Back to Classes
+            </a>
+        </div>
+
+        <div class="management-form-card">
+            <form
+                method="POST"
+                action="{{ url_for(
+                    'admin.edit_class',
+                    class_id=class_section.id
+                ) }}"
+                class="management-form"
+                novalidate
+            >
+                {{ form.hidden_tag() }}
+
+                <div class="form-section">
+                    <div class="form-section-heading">
+                        <h2>Class Information</h2>
+
+                        <p>
+                            Update the programme, section, semester,
+                            academic year or active status.
+                        </p>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            {{ form.name.label(class="form-label") }}
+
+                            {{ form.name(
+                                class="form-control",
+                                placeholder="Example: CSE-AIML"
+                            ) }}
+
+                            {% for error in form.name.errors %}
+                                <p class="form-error">
+                                    {{ error }}
+                                </p>
+                            {% endfor %}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form.section.label(class="form-label") }}
+
+                            {{ form.section(
+                                class="form-control",
+                                placeholder="Example: A"
+                            ) }}
+
+                            {% for error in form.section.errors %}
+                                <p class="form-error">
+                                    {{ error }}
+                                </p>
+                            {% endfor %}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form.semester.label(class="form-label") }}
+
+                            {{ form.semester(
+                                class="form-control",
+                                min="1",
+                                max="8"
+                            ) }}
+
+                            {% for error in form.semester.errors %}
+                                <p class="form-error">
+                                    {{ error }}
+                                </p>
+                            {% endfor %}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form.academic_year.label(
+                                class="form-label"
+                            ) }}
+
+                            {{ form.academic_year(
+                                class="form-control",
+                                placeholder="Example: 2026-27"
+                            ) }}
+
+                            {% for error in form.academic_year.errors %}
+                                <p class="form-error">
+                                    {{ error }}
+                                </p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="account-option-card">
+                    <label class="checkbox-label">
+                        {{ form.is_active() }}
+
+                        <span>
+                            {{ form.is_active.label.text }}
+                        </span>
+                    </label>
+
+                    <p>
+                        An inactive class remains stored, but it
+                        should not be selected for new students,
+                        assignments or timetable entries.
+                    </p>
+                </div>
+
+                <div class="form-actions">
+                    <a
+                        class="secondary-button"
+                        href="{{ url_for('admin.class_list') }}"
+                    >
+                        Cancel
+                    </a>
+
+                    {{ form.submit(class="primary-button") }}
+                </div>
+            </form>
+        </div>
+
+        <div class="demo-account-note">
+            <h2>Connected Records</h2>
+
+            <p>
+                Editing a class section does not delete its students,
+                teaching assignments, enrolments, timetable entries,
+                sessions or attendance history.
+            </p>
+        </div>
+
+    </div>
+</section>
+{% endblock %}

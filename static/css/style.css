@@ -976,3 +976,342 @@ a {
 .home-demo-note p {
     margin: 7px 0;
 }
+/* =========================================================
+   Admin Data Management
+   ========================================================= */
+
+.page-heading-row {
+    margin-bottom: 28px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.page-heading-row h1 {
+    margin: 14px 0 8px;
+    color: #172033;
+    font-size: clamp(30px, 4vw, 42px);
+    line-height: 1.15;
+}
+
+.page-heading-row p {
+    margin: 0;
+    color: #627086;
+    line-height: 1.6;
+}
+
+.page-action-button {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+}
+
+.module-action-link {
+    margin-top: auto;
+    padding: 10px 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    background: #2156d8;
+    border-radius: 9px;
+    font-size: 14px;
+    font-weight: 800;
+    text-decoration: none;
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+}
+
+.module-action-link:hover {
+    background: #1947b8;
+    transform: translateY(-1px);
+}
+
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.data-table {
+    width: 100%;
+    min-width: 850px;
+    border-collapse: collapse;
+}
+
+.data-table th,
+.data-table td {
+    padding: 15px 14px;
+    border-bottom: 1px solid #e5eaf2;
+    text-align: left;
+    vertical-align: middle;
+}
+
+.data-table th {
+    color: #536178;
+    background: #f6f8fc;
+    font-size: 13px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.data-table td {
+    color: #354157;
+    font-size: 14px;
+}
+
+.data-table tbody tr:hover {
+    background: #f9fbff;
+}
+
+.table-status {
+    display: inline-block;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.status-active {
+    color: #0d6744;
+    background: #dcf8eb;
+}
+
+.status-pending {
+    color: #77520a;
+    background: #fff3d2;
+}
+
+.status-inactive {
+    color: #902c38;
+    background: #fde8ec;
+}
+
+.empty-state {
+    padding: 48px 20px;
+    color: #66758b;
+    text-align: center;
+}
+
+.empty-state h3 {
+    margin: 0 0 9px;
+    color: #263247;
+}
+
+.empty-state p {
+    margin: 0;
+}
+
+@media (max-width: 720px) {
+    .page-heading-row {
+        display: block;
+    }
+
+    .page-action-button {
+        margin-top: 18px;
+    }
+}
+/* =========================================================
+   Admin Management Forms
+   ========================================================= */
+
+.form-page-container {
+    width: min(900px, 100%);
+    margin: 0 auto;
+}
+
+.page-heading-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.management-form-card {
+    padding: 30px;
+    background: #ffffff;
+    border: 1px solid #e0e6ef;
+    border-radius: 18px;
+    box-shadow: 0 12px 30px rgba(35, 50, 79, 0.08);
+}
+
+.management-form {
+    display: grid;
+    gap: 30px;
+}
+
+.form-section {
+    display: grid;
+    gap: 20px;
+}
+
+.form-section + .form-section {
+    padding-top: 28px;
+    border-top: 1px solid #e5eaf2;
+}
+
+.form-section-heading h2 {
+    margin: 0 0 7px;
+    color: #253249;
+    font-size: 21px;
+}
+
+.form-section-heading p {
+    margin: 0;
+    color: #68768b;
+    line-height: 1.6;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.account-option-card {
+    padding: 18px;
+    background: #f7f9fd;
+    border: 1px solid #e1e7f1;
+    border-radius: 12px;
+}
+
+.account-option-card p {
+    margin: 9px 0 0 25px;
+    color: #69778b;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.form-actions {
+    padding-top: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    border-top: 1px solid #e5eaf2;
+}
+
+.secondary-button {
+    min-height: 44px;
+    padding: 10px 17px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #354157;
+    background: #ffffff;
+    border: 1px solid #cfd7e4;
+    border-radius: 10px;
+    font-weight: 800;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.secondary-button:hover {
+    color: #2156d8;
+    background: #f6f8fc;
+    border-color: #aebbd0;
+}
+
+@media (max-width: 720px) {
+    .page-heading-actions {
+        margin-top: 18px;
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .management-form-card {
+        padding: 22px 18px;
+    }
+
+    .form-actions {
+        align-items: stretch;
+        flex-direction: column-reverse;
+    }
+
+    .form-actions .primary-button,
+    .form-actions .secondary-button {
+        width: 100%;
+    }
+}
+.empty-state-button {
+    margin-top: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+}
+.table-action-link {
+    padding: 7px 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #2156d8;
+    background: #edf3ff;
+    border: 1px solid #cad9fb;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 800;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.table-action-link:hover {
+    color: #ffffff;
+    background: #2156d8;
+    border-color: #2156d8;
+}
+/* -------------------------
+   Student Status Actions
+   ------------------------- */
+
+.table-action-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.inline-action-form {
+    margin: 0;
+}
+
+.table-status-button {
+    padding: 7px 11px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 800;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.deactivate-button {
+    color: #902c38;
+    background: #fde8ec;
+    border-color: #f1bdc5;
+}
+
+.deactivate-button:hover {
+    color: #ffffff;
+    background: #b52e3d;
+    border-color: #b52e3d;
+}
+
+.activate-button {
+    color: #0d6744;
+    background: #dcf8eb;
+    border-color: #afe3cc;
+}
+
+.activate-button:hover {
+    color: #ffffff;
+    background: #16845a;
+    border-color: #16845a;
+}

@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Edit Subject · Smart Classroom
+{% endblock %}
+
+{% block content %}
+<section class="dashboard-page">
+    <div class="form-page-container">
+
+        <div class="page-heading-row">
+            <div>
+                <span class="role-badge role-admin">
+                    Administrator Panel
+                </span>
+
+                <h1>Edit Subject</h1>
+
+                <p>
+                    Update the academic details for
+                    {{ subject.code }} — {{ subject.name }}.
+                </p>
+            </div>
+
+            <a
+                class="secondary-button"
+                href="{{ url_for('admin.subject_list') }}"
+            >
+                Back to Subjects
+            </a>
+        </div>
+
+        <div class="management-form-card">
+            <form
+                method="POST"
+                action="{{ url_for(
+                    'admin.edit_subject',
+                    subject_id=subject.id
+                ) }}"
+                class="management-form"
+                novalidate
+            >
+                {{ form.hidden_tag() }}
+
+                <div class="form-section">
+                    <div class="form-section-heading">
+                        <h2>Subject Information</h2>
+
+                        <p>
+                            Update the subject name, unique code,
+                            semester, or active status.
+                        </p>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            {{ form.name.label(class="form-label") }}
+
+                            {{ form.name(
+                                class="form-control",
+                                placeholder="Enter subject name"
+                            ) }}
+
+                            {% for error in form.name.errors %}
+                                <p class="form-error">
+                                    {{ error }}
+                                </p>
+                            {% endfor %}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form.code.label(class="form-label") }}
+
+                            {{ form.code(
+                                class="form-control",
+                                placeholder="Enter unique subject code"
+                            ) }}
+
+                            {% for error in form.code.errors %}
+                                <p class="form-error">
+                                    {{ error }}
+                                </p>
+                            {% endfor %}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form.semester.label(class="form-label") }}
+
+                            {{ form.semester(
+                                class="form-control",
+                                min="1",
+                                max="8"
+                            ) }}
+
+                            {% for error in form.semester.errors %}
+                                <p class="form-error">
+                                    {{ error }}
+                                </p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="account-option-card">
+                    <label class="checkbox-label">
+                        {{ form.is_active() }}
+
+                        <span>
+                            {{ form.is_active.label.text }}
+                        </span>
+                    </label>
+
+                    <p>
+                        An inactive subject remains stored in the
+                        database but should not be used for new
+                        assignments or timetable entries.
+                    </p>
+                </div>
+
+                <div class="form-actions">
+                    <a
+                        class="secondary-button"
+                        href="{{ url_for('admin.subject_list') }}"
+                    >
+                        Cancel
+                    </a>
+
+                    {{ form.submit(class="primary-button") }}
+                </div>
+            </form>
+        </div>
+
+        <div class="demo-account-note">
+            <h2>Existing Records</h2>
+
+            <p>
+                Changing a subject does not delete its existing
+                teaching assignments, enrolments, timetable entries,
+                or attendance history.
+            </p>
+        </div>
+
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,231 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Add Teacher · Smart Classroom
+{% endblock %}
+
+{% block content %}
+<section class="dashboard-page">
+    <div class="form-page-container">
+
+        <div class="page-heading-row">
+            <div>
+                <span class="role-badge role-admin">
+                    Administrator Panel
+                </span>
+
+                <h1>Add Teacher</h1>
+
+                <p>
+                    Create a local teacher login account and
+                    academic profile.
+                </p>
+            </div>
+
+            <a
+                class="secondary-button"
+                href="{{ url_for('admin.teacher_list') }}"
+            >
+                Back to Teachers
+            </a>
+        </div>
+
+        <div class="management-form-card">
+            <form
+                method="POST"
+                action="{{ url_for('admin.add_teacher') }}"
+                class="management-form"
+                novalidate
+            >
+                {{ form.hidden_tag() }}
+
+                <div class="form-section">
+                    <div class="form-section-heading">
+                        <h2>Login Information</h2>
+
+                        <p>
+                            These credentials will provide access
+                            to the Teacher Panel.
+                        </p>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            {{ form.username.label(
+                                class="form-label"
+                            ) }}
+
+                            {{ form.username(
+                                class="form-control",
+                                placeholder="Example: teacher3",
+                                autocomplete="off"
+                            ) }}
+
+                            {% for error in form.username.errors %}
+                                <p class="form-error">
+                                    {{ error }}
+                                </p>
+                            {% endfor %}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form.password.label(
+                                class="form-label"
+                            ) }}
+
+                            {{ form.password(
+                                class="form-control",
+                                placeholder="Minimum 8 characters",
+                                autocomplete="new-password"
+                            ) }}
+
+                            {% for error in form.password.errors %}
+                                <p class="form-error">
+                                    {{ error }}
+                                </p>
+                            {% endfor %}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form.confirm_password.label(
+                                class="form-label"
+                            ) }}
+
+                            {{ form.confirm_password(
+                                class="form-control",
+                                placeholder="Enter password again",
+                                autocomplete="new-password"
+                            ) }}
+
+                            {% for error in
+                                form.confirm_password.errors %}
+                                <p class="form-error">
+                                    {{ error }}
+                                </p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <div class="form-section-heading">
+                        <h2>Teacher Information</h2>
+
+                        <p>
+                            Enter the teacher’s employee and
+                            department details.
+                        </p>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            {{ form.employee_id.label(
+                                class="form-label"
+                            ) }}
+
+                            {{ form.employee_id(
+                                class="form-control",
+                                placeholder="Example: TCH-003"
+                            ) }}
+
+                            {% for error in form.employee_id.errors %}
+                                <p class="form-error">
+                                    {{ error }}
+                                </p>
+                            {% endfor %}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form.full_name.label(
+                                class="form-label"
+                            ) }}
+
+                            {{ form.full_name(
+                                class="form-control",
+                                placeholder="Enter teacher full name"
+                            ) }}
+
+                            {% for error in form.full_name.errors %}
+                                <p class="form-error">
+                                    {{ error }}
+                                </p>
+                            {% endfor %}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form.email.label(
+                                class="form-label"
+                            ) }}
+
+                            {{ form.email(
+                                class="form-control",
+                                placeholder="Optional email address",
+                                type="email"
+                            ) }}
+
+                            {% for error in form.email.errors %}
+                                <p class="form-error">
+                                    {{ error }}
+                                </p>
+                            {% endfor %}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form.department.label(
+                                class="form-label"
+                            ) }}
+
+                            {{ form.department(
+                                class="form-control",
+                                placeholder="Enter department"
+                            ) }}
+
+                            {% for error in form.department.errors %}
+                                <p class="form-error">
+                                    {{ error }}
+                                </p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="account-option-card">
+                    <label class="checkbox-label">
+                        {{ form.is_active() }}
+
+                        <span>
+                            {{ form.is_active.label.text }}
+                        </span>
+                    </label>
+
+                    <p>
+                        An inactive teacher account cannot log in
+                        until an administrator activates it.
+                    </p>
+                </div>
+
+                <div class="form-actions">
+                    <a
+                        class="secondary-button"
+                        href="{{ url_for('admin.teacher_list') }}"
+                    >
+                        Cancel
+                    </a>
+
+                    {{ form.submit(class="primary-button") }}
+                </div>
+            </form>
+        </div>
+
+        <div class="demo-account-note">
+            <h2>Account Security</h2>
+
+            <p>
+                The teacher’s password is hashed before it is stored
+                in the local SQLite database.
+            </p>
+        </div>
+
+    </div>
+</section>
+{% endblock %}

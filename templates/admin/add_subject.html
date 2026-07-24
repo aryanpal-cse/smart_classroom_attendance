@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Add Subject · Smart Classroom
+{% endblock %}
+
+{% block content %}
+<section class="dashboard-page">
+    <div class="form-page-container">
+
+        <div class="page-heading-row">
+            <div>
+                <span class="role-badge role-admin">
+                    Administrator Panel
+                </span>
+
+                <h1>Add Subject</h1>
+
+                <p>
+                    Create a subject for the local academic timetable
+                    and attendance system.
+                </p>
+            </div>
+
+            <a
+                class="secondary-button"
+                href="{{ url_for('admin.subject_list') }}"
+            >
+                Back to Subjects
+            </a>
+        </div>
+
+        <div class="management-form-card">
+            <form
+                method="POST"
+                action="{{ url_for('admin.add_subject') }}"
+                class="management-form"
+                novalidate
+            >
+                {{ form.hidden_tag() }}
+
+                <div class="form-section">
+                    <div class="form-section-heading">
+                        <h2>Subject Information</h2>
+
+                        <p>
+                            Enter the subject name, unique code
+                            and semester.
+                        </p>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            {{ form.name.label(class="form-label") }}
+
+                            {{ form.name(
+                                class="form-control",
+                                placeholder="Example: Machine Learning"
+                            ) }}
+
+                            {% for error in form.name.errors %}
+                                <p class="form-error">
+                                    {{ error }}
+                                </p>
+                            {% endfor %}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form.code.label(class="form-label") }}
+
+                            {{ form.code(
+                                class="form-control",
+                                placeholder="Example: ML304"
+                            ) }}
+
+                            {% for error in form.code.errors %}
+                                <p class="form-error">
+                                    {{ error }}
+                                </p>
+                            {% endfor %}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form.semester.label(class="form-label") }}
+
+                            {{ form.semester(
+                                class="form-control",
+                                min="1",
+                                max="8"
+                            ) }}
+
+                            {% for error in form.semester.errors %}
+                                <p class="form-error">
+                                    {{ error }}
+                                </p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="account-option-card">
+                    <label class="checkbox-label">
+                        {{ form.is_active() }}
+
+                        <span>
+                            {{ form.is_active.label.text }}
+                        </span>
+                    </label>
+
+                    <p>
+                        An inactive subject remains stored but cannot
+                        be selected for new academic activities.
+                    </p>
+                </div>
+
+                <div class="form-actions">
+                    <a
+                        class="secondary-button"
+                        href="{{ url_for('admin.subject_list') }}"
+                    >
+                        Cancel
+                    </a>
+
+                    {{ form.submit(class="primary-button") }}
+                </div>
+            </form>
+        </div>
+
+        <div class="demo-account-note">
+            <h2>Subject Code Rule</h2>
+
+            <p>
+                Every subject code must be unique. The system converts
+                entered subject codes to uppercase before saving.
+            </p>
+        </div>
+
+    </div>
+</section>
+{% endblock %}

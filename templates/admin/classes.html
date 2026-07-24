@@ -1,0 +1,210 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Class Section Management · Smart Classroom
+{% endblock %}
+
+{% block content %}
+<section class="dashboard-page">
+    <div class="dashboard-container">
+
+        <!-- Page Heading -->
+        <div class="page-heading-row">
+            <div>
+                <span class="role-badge role-admin">
+                    Administrator Panel
+                </span>
+
+                <h1>Class Section Management</h1>
+
+                <p>
+                    View, add and update programmes, sections,
+                    semesters, academic years and class status.
+                </p>
+            </div>
+
+            <div class="page-heading-actions">
+                <a
+                    class="secondary-button"
+                    href="{{ url_for('admin.dashboard') }}"
+                >
+                    Back to Dashboard
+                </a>
+
+                <a
+                    class="primary-button page-action-button"
+                    href="{{ url_for('admin.add_class') }}"
+                >
+                    Add Class Section
+                </a>
+            </div>
+        </div>
+
+        <!-- Class Section Records -->
+        <div class="dashboard-card">
+            <div class="dashboard-card-heading">
+                <h2>Registered Class Sections</h2>
+
+                <p>
+                    Total class-section records:
+                    <strong>{{ class_sections|length }}</strong>
+                </p>
+            </div>
+
+            {% if class_sections %}
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Programme</th>
+                                <th>Section</th>
+                                <th>Semester</th>
+                                <th>Academic Year</th>
+                                <th>Students</th>
+                                <th>Teaching Assignments</th>
+                                <th>Enrolments</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for class_section in class_sections %}
+                                <tr>
+                                    <!-- Programme -->
+                                    <td>
+                                        <strong>
+                                            {{ class_section.name }}
+                                        </strong>
+                                    </td>
+
+                                    <!-- Section -->
+                                    <td>
+                                        Section
+                                        {{ class_section.section }}
+                                    </td>
+
+                                    <!-- Semester -->
+                                    <td>
+                                        Semester
+                                        {{ class_section.semester }}
+                                    </td>
+
+                                    <!-- Academic Year -->
+                                    <td>
+                                        {{ class_section.academic_year }}
+                                    </td>
+
+                                    <!-- Student Count -->
+                                    <td>
+                                        {{ class_section.students|length }}
+                                    </td>
+
+                                    <!-- Teaching Assignment Count -->
+                                    <td>
+                                        {{
+                                            class_section
+                                            .teaching_assignments
+                                            |length
+                                        }}
+                                    </td>
+
+                                    <!-- Enrolment Count -->
+                                    <td>
+                                        {{
+                                            class_section
+                                            .enrollments
+                                            |length
+                                        }}
+                                    </td>
+
+                                    <!-- Status -->
+                                    <td>
+                                        {% if class_section.is_active %}
+                                            <span
+                                                class="
+                                                    table-status
+                                                    status-active
+                                                "
+                                            >
+                                                Active
+                                            </span>
+                                        {% else %}
+                                            <span
+                                                class="
+                                                    table-status
+                                                    status-inactive
+                                                "
+                                            >
+                                                Inactive
+                                            </span>
+                                        {% endif %}
+                                    </td>
+
+                                    <!-- Actions -->
+                                    <td>
+                                        <div class="table-action-group">
+                                            <a
+                                                class="table-action-link"
+                                                href="{{ url_for(
+                                                    'admin.edit_class',
+                                                    class_id=class_section.id
+                                                ) }}"
+                                            >
+                                                Edit
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <!-- Empty State -->
+                <div class="empty-state">
+                    <h3>No Class Sections Found</h3>
+
+                    <p>
+                        No class-section records are currently available.
+                        Add the first class section using the button below.
+                    </p>
+
+                    <a
+                        class="
+                            primary-button
+                            empty-state-button
+                        "
+                        href="{{ url_for('admin.add_class') }}"
+                    >
+                        Add First Class Section
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Current Functionality -->
+        <div class="demo-account-note">
+            <h2>Class Management Status</h2>
+
+            <p>
+                Class-section records on this page are loaded directly
+                from the local SQLite database.
+            </p>
+
+            <p>
+                The administrator can create class sections, edit
+                programme details, update semesters and academic years,
+                and activate or deactivate class sections.
+            </p>
+
+            <p>
+                Existing students, teaching assignments, enrolments,
+                timetable entries and attendance history are preserved
+                when class information is edited.
+            </p>
+        </div>
+
+    </div>
+</section>
+{% endblock %}

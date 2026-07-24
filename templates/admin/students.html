@@ -1,0 +1,224 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Student Management · Smart Classroom
+{% endblock %}
+
+{% block content %}
+<section class="dashboard-page">
+    <div class="dashboard-container">
+
+        <!-- Page Heading -->
+        <div class="page-heading-row">
+            <div>
+                <span class="role-badge role-admin">
+                    Administrator Panel
+                </span>
+
+                <h1>Student Management</h1>
+
+                <p>
+                    View, add and update student accounts,
+                    academic information and account status.
+                </p>
+            </div>
+
+            <div class="page-heading-actions">
+                <a
+                    class="secondary-button"
+                    href="{{ url_for('admin.dashboard') }}"
+                >
+                    Back to Dashboard
+                </a>
+
+                <a
+                    class="primary-button page-action-button"
+                    href="{{ url_for('admin.add_student') }}"
+                >
+                    Add Student
+                </a>
+            </div>
+        </div>
+
+        <!-- Student Records -->
+        <div class="dashboard-card">
+            <div class="dashboard-card-heading">
+                <h2>Registered Students</h2>
+
+                <p>
+                    Total student records:
+                    <strong>{{ students|length }}</strong>
+                </p>
+            </div>
+
+            {% if students %}
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Roll Number</th>
+                                <th>Student Name</th>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Class</th>
+                                <th>Face Status</th>
+                                <th>Account Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for student in students %}
+                                <tr>
+                                    <!-- Roll Number -->
+                                    <td>
+                                        <strong>
+                                            {{ student.roll_number }}
+                                        </strong>
+                                    </td>
+
+                                    <!-- Student Name -->
+                                    <td>
+                                        {{ student.full_name }}
+                                    </td>
+
+                                    <!-- Username -->
+                                    <td>
+                                        {% if student.user %}
+                                            {{ student.user.username }}
+                                        {% else %}
+                                            Not available
+                                        {% endif %}
+                                    </td>
+
+                                    <!-- Email -->
+                                    <td>
+                                        {% if student.email %}
+                                            {{ student.email }}
+                                        {% else %}
+                                            Not provided
+                                        {% endif %}
+                                    </td>
+
+                                    <!-- Class Section -->
+                                    <td>
+                                        {% if student.class_section %}
+                                            {{ student.class_section.name }}
+                                            Section
+                                            {{ student.class_section.section }}
+                                        {% else %}
+                                            Not assigned
+                                        {% endif %}
+                                    </td>
+
+                                    <!-- Face Registration Status -->
+                                    <td>
+                                        {% if student.face_registered %}
+                                            <span
+                                                class="
+                                                    table-status
+                                                    status-active
+                                                "
+                                            >
+                                                Registered
+                                            </span>
+                                        {% else %}
+                                            <span
+                                                class="
+                                                    table-status
+                                                    status-pending
+                                                "
+                                            >
+                                                Not Registered
+                                            </span>
+                                        {% endif %}
+                                    </td>
+
+                                    <!-- Account Status -->
+                                    <td>
+                                        {% if student.user
+                                              and student.user.is_active %}
+                                            <span
+                                                class="
+                                                    table-status
+                                                    status-active
+                                                "
+                                            >
+                                                Active
+                                            </span>
+                                        {% else %}
+                                            <span
+                                                class="
+                                                    table-status
+                                                    status-inactive
+                                                "
+                                            >
+                                                Inactive
+                                            </span>
+                                        {% endif %}
+                                    </td>
+
+                                    <!-- Student Actions -->
+                                    <td>
+                                        <a
+                                            class="table-action-link"
+                                            href="{{ url_for(
+                                                'admin.edit_student',
+                                                student_id=student.id
+                                            ) }}"
+                                        >
+                                            Edit
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <!-- Empty Student List -->
+                <div class="empty-state">
+                    <h3>No Students Found</h3>
+
+                    <p>
+                        No student records are currently available.
+                        Add the first student using the button below.
+                    </p>
+
+                    <a
+                        class="
+                            primary-button
+                            empty-state-button
+                        "
+                        href="{{ url_for('admin.add_student') }}"
+                    >
+                        Add First Student
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Current Functionality -->
+        <div class="demo-account-note">
+            <h2>Student Management Status</h2>
+
+            <p>
+                Student records on this page are loaded from the
+                local SQLite database.
+            </p>
+
+            <p>
+                The administrator can currently add students,
+                edit academic details, change usernames, reset
+                passwords and activate or deactivate accounts.
+            </p>
+
+            <p>
+                Face registration will be implemented separately
+                during the face-enrolment phase.
+            </p>
+        </div>
+
+    </div>
+</section>
+{% endblock %}

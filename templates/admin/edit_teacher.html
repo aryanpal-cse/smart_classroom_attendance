@@ -1,0 +1,227 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Edit Teacher · Smart Classroom
+{% endblock %}
+
+{% block content %}
+<section class="dashboard-page">
+    <div class="form-page-container">
+
+        <div class="page-heading-row">
+            <div>
+                <span class="role-badge role-admin">
+                    Administrator Panel
+                </span>
+
+                <h1>Edit Teacher</h1>
+
+                <p>
+                    Update the account and academic information for
+                    {{ teacher.full_name }}.
+                </p>
+            </div>
+
+            <a
+                class="secondary-button"
+                href="{{ url_for('admin.teacher_list') }}"
+            >
+                Back to Teachers
+            </a>
+        </div>
+
+        <div class="management-form-card">
+            <form
+                method="POST"
+                action="{{ url_for(
+                    'admin.edit_teacher',
+                    teacher_id=teacher.id
+                ) }}"
+                class="management-form"
+                novalidate
+            >
+                {{ form.hidden_tag() }}
+
+                <div class="form-section">
+                    <div class="form-section-heading">
+                        <h2>Login Information</h2>
+
+                        <p>
+                            Update the username, account status or
+                            optionally reset the teacher password.
+                        </p>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            {{ form.username.label(class="form-label") }}
+
+                            {{ form.username(
+                                class="form-control",
+                                autocomplete="off"
+                            ) }}
+
+                            {% for error in form.username.errors %}
+                                <p class="form-error">
+                                    {{ error }}
+                                </p>
+                            {% endfor %}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form.new_password.label(
+                                class="form-label"
+                            ) }}
+
+                            {{ form.new_password(
+                                class="form-control",
+                                placeholder=(
+                                    "Leave empty to keep current password"
+                                ),
+                                autocomplete="new-password"
+                            ) }}
+
+                            {% for error in form.new_password.errors %}
+                                <p class="form-error">
+                                    {{ error }}
+                                </p>
+                            {% endfor %}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form.confirm_new_password.label(
+                                class="form-label"
+                            ) }}
+
+                            {{ form.confirm_new_password(
+                                class="form-control",
+                                placeholder="Repeat the new password",
+                                autocomplete="new-password"
+                            ) }}
+
+                            {% for error in
+                                form.confirm_new_password.errors %}
+                                <p class="form-error">
+                                    {{ error }}
+                                </p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <div class="form-section-heading">
+                        <h2>Teacher Information</h2>
+
+                        <p>
+                            Update employee, contact and department details.
+                        </p>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            {{ form.employee_id.label(
+                                class="form-label"
+                            ) }}
+
+                            {{ form.employee_id(
+                                class="form-control"
+                            ) }}
+
+                            {% for error in form.employee_id.errors %}
+                                <p class="form-error">
+                                    {{ error }}
+                                </p>
+                            {% endfor %}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form.full_name.label(
+                                class="form-label"
+                            ) }}
+
+                            {{ form.full_name(
+                                class="form-control"
+                            ) }}
+
+                            {% for error in form.full_name.errors %}
+                                <p class="form-error">
+                                    {{ error }}
+                                </p>
+                            {% endfor %}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form.email.label(class="form-label") }}
+
+                            {{ form.email(
+                                class="form-control",
+                                type="email",
+                                placeholder="Optional email address"
+                            ) }}
+
+                            {% for error in form.email.errors %}
+                                <p class="form-error">
+                                    {{ error }}
+                                </p>
+                            {% endfor %}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form.department.label(
+                                class="form-label"
+                            ) }}
+
+                            {{ form.department(
+                                class="form-control"
+                            ) }}
+
+                            {% for error in form.department.errors %}
+                                <p class="form-error">
+                                    {{ error }}
+                                </p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="account-option-card">
+                    <label class="checkbox-label">
+                        {{ form.is_active() }}
+
+                        <span>
+                            {{ form.is_active.label.text }}
+                        </span>
+                    </label>
+
+                    <p>
+                        An inactive teacher account cannot log in to
+                        the Teacher Panel.
+                    </p>
+                </div>
+
+                <div class="form-actions">
+                    <a
+                        class="secondary-button"
+                        href="{{ url_for('admin.teacher_list') }}"
+                    >
+                        Cancel
+                    </a>
+
+                    {{ form.submit(class="primary-button") }}
+                </div>
+            </form>
+        </div>
+
+        <div class="demo-account-note">
+            <h2>Password Update</h2>
+
+            <p>
+                Leave both password fields empty to preserve the
+                teacher’s existing password.
+            </p>
+        </div>
+
+    </div>
+</section>
+{% endblock %}
