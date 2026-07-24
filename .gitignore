@@ -1,0 +1,35 @@
+# Python virtual environment
+venv/
+.venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Environment variables
+.env
+
+# Local database
+instance/*.db
+instance/*.sqlite
+instance/*.sqlite3
+
+# Face biometric samples
+face_data/*
+!face_data/.gitkeep
+
+# Generated reports
+reports/*
+!reports/.gitkeep
+
+# Testing cache
+.pytest_cache/
+.coverage
+htmlcov/
+
+# VS Code local settings
+.vscode/
+
+# Operating-system files
+.DS_Store
+Thumbs.db
