@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% block title %}
+    My Assigned Classes · Smart Classroom
+{% endblock %}
+
+{% block content %}
+<section class="dashboard-page">
+    <div class="dashboard-container">
+
+        <div class="page-heading-row">
+            <div>
+                <span class="role-badge role-teacher">
+                    Teacher Panel
+                </span>
+
+                <h1>My Assigned Classes</h1>
+
+                <p>
+                    View the subjects and class sections assigned to
+                    <strong>{{ teacher.full_name }}</strong>.
+                </p>
+            </div>
+
+            <div class="page-heading-actions">
+                <a
+                    class="secondary-button"
+                    href="{{ url_for('teacher.dashboard') }}"
+                >
+                    Back to Dashboard
+                </a>
+            </div>
+        </div>
+
+        <div class="dashboard-card">
+            <div class="dashboard-card-heading">
+                <div>
+                    <h2>Teaching Assignments</h2>
+
+                    <p>
+                        Total active assignments:
+                        <strong>{{ assignments|length }}</strong>
+                    </p>
+                </div>
+            </div>
+
+            {% if assignments %}
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Subject</th>
+                                <th>Subject Code</th>
+                                <th>Programme</th>
+                                <th>Section</th>
+                                <th>Semester</th>
+                                <th>Academic Year</th>
+                                <th>Class Session</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for assignment in assignments %}
+                                <tr>
+                                    <td>
+                                        <strong>
+                                            {{ assignment.subject_name }}
+                                        </strong>
+                                    </td>
+
+                                    <td>
+                                        {{ assignment.subject_code }}
+                                    </td>
+
+                                    <td>
+                                        {{ assignment.class_name }}
+                                    </td>
+
+                                    <td>
+                                        Section {{ assignment.section }}
+                                    </td>
+
+                                    <td>
+                                        Semester {{ assignment.semester }}
+                                    </td>
+
+                                    <td>
+                                        {{ assignment.academic_year }}
+                                    </td>
+
+                                    <td>
+                                        <span
+                                            class="
+                                                table-status
+                                                status-inactive
+                                            "
+                                        >
+                                            Not Started
+                                        </span>
+
+                                        <p>
+                                            <small>
+                                                Session controls will be
+                                                added in the class-session
+                                                phase.
+                                            </small>
+                                        </p>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <h3>No Assigned Classes</h3>
+
+                    <p>
+                        The administrator has not assigned any subject
+                        and class section to this teacher account.
+                    </p>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="demo-account-note">
+            <h2>How This Page Works</h2>
+
+            <p>
+                The assignments are loaded directly from the local
+                SQLite database using the logged-in teacher profile.
+            </p>
+
+            <p>
+                A teacher can only view their own assignments. Starting
+                a session and generating a temporary attendance code
+                will be added later.
+            </p>
+        </div>
+
+    </div>
+</section>
+{% endblock %}

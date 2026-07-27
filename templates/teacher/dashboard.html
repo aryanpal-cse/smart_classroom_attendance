@@ -7,91 +7,369 @@
 {% block content %}
 <section class="dashboard-page">
     <div class="dashboard-container">
-        <div class="dashboard-heading">
+
+        <!-- Page Heading -->
+        <div class="page-heading-row">
             <div>
                 <span class="role-badge role-teacher">
                     Teacher Panel
                 </span>
 
-                <h1>
-                    Welcome,
-                    {{ teacher.full_name if teacher else current_user.username }}
-                </h1>
+                <h1>Teacher Dashboard</h1>
 
                 <p>
-                    View scheduled classes and manage attendance sessions.
+                    Welcome,
+                    <strong>{{ teacher.full_name }}</strong>.
+                    View your assigned subjects, class sections and
+                    timetable.
                 </p>
             </div>
-        </div>
 
-        <div class="profile-information-card">
-            <div>
-                <span class="profile-label">Employee ID</span>
-                <strong>
-                    {{ teacher.employee_id if teacher else "Not available" }}
-                </strong>
-            </div>
-
-            <div>
-                <span class="profile-label">Department</span>
-                <strong>
-                    {{ teacher.department if teacher else "Not available" }}
-                </strong>
-            </div>
-
-            <div>
-                <span class="profile-label">Account Status</span>
-                <strong>Active</strong>
+            <div class="page-heading-actions">
+                <a
+                    class="primary-button"
+                    href="{{ url_for('teacher.class_list') }}"
+                >
+                    My Assigned Classes
+                </a>
             </div>
         </div>
 
+        <!-- Summary Cards -->
+        <div class="stats-grid">
+            <article class="stat-card">
+                <span>Teaching Assignments</span>
+
+                <strong>
+                    {{ summary.assignment_count }}
+                </strong>
+
+                <p>
+                    Active subject and class assignments
+                </p>
+            </article>
+
+            <article class="stat-card">
+                <span>Assigned Subjects</span>
+
+                <strong>
+                    {{ summary.subject_count }}
+                </strong>
+
+                <p>
+                    Subjects currently assigned to you
+                </p>
+            </article>
+
+            <article class="stat-card">
+                <span>Assigned Classes</span>
+
+                <strong>
+                    {{ summary.class_count }}
+                </strong>
+
+                <p>
+                    Class sections connected to your account
+                </p>
+            </article>
+
+            <article class="stat-card">
+                <span>Today's Classes</span>
+
+                <strong>
+                    {{ summary.today_class_count }}
+                </strong>
+
+                <p>
+                    {{ today_name }} timetable entries
+                </p>
+            </article>
+        </div>
+
+        <!-- Today's Timetable -->
         <div class="dashboard-card">
             <div class="dashboard-card-heading">
-                <h2>Teacher Modules</h2>
+                <div>
+                    <h2>Today's Timetable</h2>
 
-                <p>
-                    Class-session features will be implemented incrementally.
-                </p>
-            </div>
-
-            <div class="module-grid">
-                <div class="module-card">
-                    <h3>Today's Timetable</h3>
-                    <p>View classes assigned for the current day.</p>
-                    <span class="development-status">Coming in Phase 5</span>
-                </div>
-
-                <div class="module-card">
-                    <h3>Start Scheduled Class</h3>
-                    <p>Validate the timetable and begin a class session.</p>
-                    <span class="development-status">Coming later</span>
-                </div>
-
-                <div class="module-card">
-                    <h3>Dynamic Class Code</h3>
-                    <p>Generate and display a temporary attendance code.</p>
-                    <span class="development-status">Coming later</span>
-                </div>
-
-                <div class="module-card">
-                    <h3>Live Attendance</h3>
-                    <p>Monitor recognized, pending and manual-review students.</p>
-                    <span class="development-status">Coming later</span>
-                </div>
-
-                <div class="module-card">
-                    <h3>Manual Review</h3>
-                    <p>Approve or reject exceptional verification failures.</p>
-                    <span class="development-status">Coming later</span>
-                </div>
-
-                <div class="module-card">
-                    <h3>Attendance History</h3>
-                    <p>Review previously completed class sessions.</p>
-                    <span class="development-status">Coming later</span>
+                    <p>
+                        Scheduled classes for
+                        <strong>{{ today_name }}</strong>.
+                    </p>
                 </div>
             </div>
+
+            {% if today_timetable %}
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Subject</th>
+                                <th>Class Section</th>
+                                <th>Room</th>
+                                <th>Session Status</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for entry in today_timetable %}
+                                <tr>
+                                    <td>
+                                        <strong>
+                                            {{ entry.start_time }}
+                                        </strong>
+
+                                        <br>
+
+                                        <small>
+                                            to {{ entry.end_time }}
+                                        </small>
+                                    </td>
+
+                                    <td>
+                                        <strong>
+                                            {{ entry.subject_name }}
+                                        </strong>
+
+                                        <br>
+
+                                        <small>
+                                            {{ entry.subject_code }}
+                                        </small>
+                                    </td>
+
+                                    <td>
+                                        {{ entry.class_name }}
+
+                                        <br>
+
+                                        <small>
+                                            Section {{ entry.section }}
+                                        </small>
+                                    </td>
+
+                                    <td>
+                                        {{ entry.room }}
+                                    </td>
+
+                                    <td>
+                                        <span
+                                            class="
+                                                table-status
+                                                status-inactive
+                                            "
+                                        >
+                                            Not Started
+                                        </span>
+
+                                        <p>
+                                            <small>
+                                                Session controls will be
+                                                added in the class-session
+                                                phase.
+                                            </small>
+                                        </p>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <h3>No Classes Scheduled Today</h3>
+
+                    <p>
+                        There are no active timetable entries assigned
+                        to this teacher for {{ today_name }}.
+                    </p>
+                </div>
+            {% endif %}
         </div>
+
+        <!-- Assigned Subjects and Classes -->
+        <div class="dashboard-card">
+            <div class="dashboard-card-heading">
+                <div>
+                    <h2>Assigned Subjects and Classes</h2>
+
+                    <p>
+                        Academic assignments connected to your teacher
+                        profile.
+                    </p>
+                </div>
+
+                <a
+                    class="secondary-button"
+                    href="{{ url_for('teacher.class_list') }}"
+                >
+                    View All Assignments
+                </a>
+            </div>
+
+            {% if assignments %}
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Subject</th>
+                                <th>Subject Code</th>
+                                <th>Programme</th>
+                                <th>Section</th>
+                                <th>Semester</th>
+                                <th>Academic Year</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for assignment in assignments %}
+                                <tr>
+                                    <td>
+                                        <strong>
+                                            {{ assignment.subject_name }}
+                                        </strong>
+                                    </td>
+
+                                    <td>
+                                        {{ assignment.subject_code }}
+                                    </td>
+
+                                    <td>
+                                        {{ assignment.class_name }}
+                                    </td>
+
+                                    <td>
+                                        Section {{ assignment.section }}
+                                    </td>
+
+                                    <td>
+                                        Semester
+                                        {{ assignment.semester }}
+                                    </td>
+
+                                    <td>
+                                        {{ assignment.academic_year }}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <h3>No Teaching Assignments Found</h3>
+
+                    <p>
+                        The administrator has not assigned any subject
+                        or class section to this teacher account.
+                    </p>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Full Timetable -->
+        <div class="dashboard-card">
+            <div class="dashboard-card-heading">
+                <div>
+                    <h2>Complete Timetable</h2>
+
+                    <p>
+                        All active timetable entries connected to your
+                        teaching assignments.
+                    </p>
+                </div>
+            </div>
+
+            {% if full_timetable %}
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Day</th>
+                                <th>Time</th>
+                                <th>Subject</th>
+                                <th>Class Section</th>
+                                <th>Room</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for entry in full_timetable %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ entry.day }}</strong>
+                                    </td>
+
+                                    <td>
+                                        {{ entry.start_time }}
+
+                                        <br>
+
+                                        <small>
+                                            to {{ entry.end_time }}
+                                        </small>
+                                    </td>
+
+                                    <td>
+                                        <strong>
+                                            {{ entry.subject_name }}
+                                        </strong>
+
+                                        <br>
+
+                                        <small>
+                                            {{ entry.subject_code }}
+                                        </small>
+                                    </td>
+
+                                    <td>
+                                        {{ entry.class_name }}
+
+                                        <br>
+
+                                        <small>
+                                            Section {{ entry.section }}
+                                        </small>
+                                    </td>
+
+                                    <td>
+                                        {{ entry.room }}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <h3>No Timetable Entries Found</h3>
+
+                    <p>
+                        No timetable entries are currently connected
+                        to this teacher's assignments.
+                    </p>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Development Status -->
+        <div class="demo-account-note">
+            <h2>Current Teacher Panel Status</h2>
+
+            <p>
+                This dashboard loads real teacher assignments, class
+                sections, subjects and timetable records from the local
+                SQLite database.
+            </p>
+
+            <p>
+                Starting a class, generating a temporary attendance
+                code, live attendance monitoring and manual attendance
+                review will be added in upcoming phases.
+            </p>
+        </div>
+
     </div>
 </section>
 {% endblock %}
