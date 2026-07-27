@@ -9,6 +9,10 @@ from forms.admin import (
     EditTeacherForm,
 )
 from forms.auth import LoginForm
+from forms.timetable import (
+    AddTimetableForm,
+    EditTimetableForm,
+)
 
 
 __all__ = [
@@ -21,4 +25,6 @@ __all__ = [
     "EditSubjectForm",
     "AddClassSectionForm",
     "EditClassSectionForm",
+    "AddTimetableForm",
+    "EditTimetableForm",
 ]

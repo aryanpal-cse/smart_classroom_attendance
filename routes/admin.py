@@ -17,16 +17,20 @@ from forms import (
     AddStudentForm,
     AddSubjectForm,
     AddTeacherForm,
+    AddTimetableForm,
     EditClassSectionForm,
     EditStudentForm,
     EditSubjectForm,
     EditTeacherForm,
+    EditTimetableForm,
 )
 from models import(
      AuditLog,
      ClassSection,
      Student, 
      Subject, 
+     TeachingAssignment,
+     Timetable,
      Teacher, 
      User,
 
@@ -1065,4 +1069,666 @@ def add_class():
     return render_template(
         "admin/add_class.html",
         form=form,
+    )
+def _format_timetable_time(value):
+    """Return a readable timetable time."""
+    if value is None:
+        return "Not specified"
+
+    if hasattr(value, "strftime"):
+        return value.strftime("%I:%M %p")
+
+    return str(value)
+
+
+@admin_bp.route("/timetable")
+@role_required("admin")
+def timetable_list():
+    """Display all timetable entries for the administrator."""
+    entries = Timetable.query.all()
+
+    day_order = {
+        "Monday": 1,
+        "Tuesday": 2,
+        "Wednesday": 3,
+        "Thursday": 4,
+        "Friday": 5,
+        "Saturday": 6,
+        "Sunday": 7,
+    }
+
+    entries.sort(
+        key=lambda entry: (
+            day_order.get(
+                getattr(entry, "day_of_week", ""),
+                99,
+            ),
+            str(getattr(entry, "start_time", "")),
+        )
+    )
+
+    timetable_rows = []
+
+    for entry in entries:
+        assignment_id = getattr(
+            entry,
+            "teaching_assignment_id",
+            None,
+        )
+
+        assignment = (
+            db.session.get(
+                TeachingAssignment,
+                assignment_id,
+            )
+            if assignment_id is not None
+            else None
+        )
+
+        teacher = None
+        subject = None
+        class_section = None
+
+        if assignment is not None:
+            teacher_id = getattr(
+                assignment,
+                "teacher_id",
+                None,
+            )
+
+            subject_id = getattr(
+                assignment,
+                "subject_id",
+                None,
+            )
+
+            class_section_id = getattr(
+                assignment,
+                "class_section_id",
+                getattr(
+                    assignment,
+                    "class_id",
+                    None,
+                ),
+            )
+
+            if teacher_id is not None:
+                teacher = db.session.get(
+                    Teacher,
+                    teacher_id,
+                )
+
+            if subject_id is not None:
+                subject = db.session.get(
+                    Subject,
+                    subject_id,
+                )
+
+            if class_section_id is not None:
+                class_section = db.session.get(
+                    ClassSection,
+                    class_section_id,
+                )
+
+        timetable_rows.append(
+            {
+                "id": entry.id,
+                "day": getattr(
+                    entry,
+                    "day_of_week",
+                    "Not specified",
+                ),
+                "start_time": _format_timetable_time(
+                    getattr(
+                        entry,
+                        "start_time",
+                        None,
+                    )
+                ),
+                "end_time": _format_timetable_time(
+                    getattr(
+                        entry,
+                        "end_time",
+                        None,
+                    )
+                ),
+                "room": getattr(
+                    entry,
+                    "room_number",
+                    "Not specified",
+                ),
+                "is_active": getattr(
+                    entry,
+                    "is_active",
+                    True,
+                ),
+                "teacher_name": getattr(
+                    teacher,
+                    "full_name",
+                    "Unknown Teacher",
+                ),
+                "employee_id": getattr(
+                    teacher,
+                    "employee_id",
+                    "—",
+                ),
+                "subject_name": getattr(
+                    subject,
+                    "name",
+                    "Unknown Subject",
+                ),
+                "subject_code": getattr(
+                    subject,
+                    "code",
+                    "—",
+                ),
+                "class_name": getattr(
+                    class_section,
+                    "name",
+                    "Unknown Class",
+                ),
+                "section": getattr(
+                    class_section,
+                    "section",
+                    "—",
+                ),
+                "semester": getattr(
+                    class_section,
+                    "semester",
+                    "—",
+                ),
+            }
+        )
+
+    summary = {
+        "total": len(timetable_rows),
+        "active": sum(
+            1
+            for row in timetable_rows
+            if row["is_active"]
+        ),
+        "inactive": sum(
+            1
+            for row in timetable_rows
+            if not row["is_active"]
+        ),
+    }
+
+    return render_template(
+        "admin/timetable.html",
+        timetable_rows=timetable_rows,
+        summary=summary,
+    )
+def _get_timetable_assignment_choices():
+    """Build readable teaching-assignment choices."""
+    assignments = TeachingAssignment.query.order_by(
+        TeachingAssignment.id.asc()
+    ).all()
+
+    choices = []
+
+    for assignment in assignments:
+        if not getattr(assignment, "is_active", True):
+            continue
+
+        teacher = db.session.get(
+            Teacher,
+            assignment.teacher_id,
+        )
+
+        subject = db.session.get(
+            Subject,
+            assignment.subject_id,
+        )
+
+        class_section_id = getattr(
+            assignment,
+            "class_section_id",
+            getattr(assignment, "class_id", None),
+        )
+
+        class_section = (
+            db.session.get(
+                ClassSection,
+                class_section_id,
+            )
+            if class_section_id is not None
+            else None
+        )
+
+        teacher_name = getattr(
+            teacher,
+            "full_name",
+            "Unknown Teacher",
+        )
+
+        subject_name = getattr(
+            subject,
+            "name",
+            "Unknown Subject",
+        )
+
+        subject_code = getattr(
+            subject,
+            "code",
+            "—",
+        )
+
+        class_name = getattr(
+            class_section,
+            "name",
+            "Unknown Class",
+        )
+
+        section = getattr(
+            class_section,
+            "section",
+            "—",
+        )
+
+        label = (
+            f"{teacher_name} · {subject_name} "
+            f"({subject_code}) · {class_name} "
+            f"Section {section}"
+        )
+
+        choices.append(
+            (
+                assignment.id,
+                label,
+            )
+        )
+
+    return choices
+
+
+def _times_overlap(
+    first_start,
+    first_end,
+    second_start,
+    second_end,
+):
+    """Return True when two timetable time ranges overlap."""
+    return (
+        first_start < second_end
+        and first_end > second_start
+    )
+
+
+@admin_bp.route(
+    "/timetable/add",
+    methods=["GET", "POST"],
+)
+@role_required("admin")
+def add_timetable():
+    """Create a timetable entry with conflict checks."""
+    form = AddTimetableForm()
+
+    form.teaching_assignment_id.choices = (
+        _get_timetable_assignment_choices()
+    )
+
+    if not form.teaching_assignment_id.choices:
+        flash(
+            (
+                "Create an active teaching assignment before "
+                "adding a timetable entry."
+            ),
+            "warning",
+        )
+
+        return redirect(
+            url_for("admin.timetable_list")
+        )
+
+    if form.validate_on_submit():
+        assignment = db.get_or_404(
+            TeachingAssignment,
+            form.teaching_assignment_id.data,
+        )
+
+        day = form.day_of_week.data
+        start_time = form.start_time.data
+        end_time = form.end_time.data
+        room_number = form.room_number.data.strip().upper()
+
+        class_section_id = getattr(
+            assignment,
+            "class_section_id",
+            getattr(assignment, "class_id", None),
+        )
+
+        existing_entries = Timetable.query.filter_by(
+            day_of_week=day,
+        ).all()
+
+        conflict_messages = []
+
+        for existing_entry in existing_entries:
+            if not getattr(
+                existing_entry,
+                "is_active",
+                True,
+            ):
+                continue
+
+            if not _times_overlap(
+                start_time,
+                end_time,
+                existing_entry.start_time,
+                existing_entry.end_time,
+            ):
+                continue
+
+            existing_assignment = db.session.get(
+                TeachingAssignment,
+                existing_entry.teaching_assignment_id,
+            )
+
+            if existing_assignment is None:
+                continue
+
+            existing_class_id = getattr(
+                existing_assignment,
+                "class_section_id",
+                getattr(
+                    existing_assignment,
+                    "class_id",
+                    None,
+                ),
+            )
+
+            if (
+                existing_assignment.teacher_id
+                == assignment.teacher_id
+            ):
+                conflict_messages.append(
+                    "The selected teacher already has a class "
+                    "during this time."
+                )
+
+            if existing_class_id == class_section_id:
+                conflict_messages.append(
+                    "The selected class section already has another "
+                    "subject during this time."
+                )
+
+            existing_room = str(
+                getattr(
+                    existing_entry,
+                    "room_number",
+                    "",
+                )
+            ).strip().upper()
+
+            if (
+                existing_room
+                and existing_room == room_number
+            ):
+                conflict_messages.append(
+                    "The selected room is already occupied during "
+                    "this time."
+                )
+
+        conflict_messages = list(
+            dict.fromkeys(conflict_messages)
+        )
+
+        if conflict_messages:
+            for message in conflict_messages:
+                form.start_time.errors.append(message)
+
+        else:
+            try:
+                timetable_entry = Timetable(
+                    teaching_assignment_id=assignment.id,
+                    day_of_week=day,
+                    start_time=start_time,
+                    end_time=end_time,
+                    room_number=room_number,
+                    is_active=form.is_active.data,
+                )
+
+                audit_log = AuditLog(
+                    user_id=current_user.id,
+                    action="TIMETABLE_ENTRY_CREATED",
+                    details=(
+                        f"Created timetable entry for assignment "
+                        f"{assignment.id} on {day}, "
+                        f"{start_time.strftime('%H:%M')} to "
+                        f"{end_time.strftime('%H:%M')}, "
+                        f"room {room_number}."
+                    ),
+                )
+
+                db.session.add(timetable_entry)
+                db.session.add(audit_log)
+                db.session.commit()
+
+                flash(
+                    "Timetable entry was added successfully.",
+                    "success",
+                )
+
+                return redirect(
+                    url_for("admin.timetable_list")
+                )
+
+            except Exception as error:
+                db.session.rollback()
+
+                print(
+                    "ADD TIMETABLE ERROR:",
+                    error,
+                )
+
+                flash(
+                    (
+                        "The timetable entry could not be added. "
+                        "Please check the information and try again."
+                    ),
+                    "danger",
+                )
+
+    return render_template(
+        "admin/add_timetable.html",
+        form=form,
+    )
+@admin_bp.route(
+    "/timetable/<int:timetable_id>/edit",
+    methods=["GET", "POST"],
+)
+@role_required("admin")
+def edit_timetable(timetable_id: int):
+    """Update an existing timetable entry with conflict checks."""
+    timetable_entry = db.get_or_404(
+        Timetable,
+        timetable_id,
+    )
+
+    form = EditTimetableForm(
+        obj=timetable_entry,
+    )
+
+    form.teaching_assignment_id.choices = (
+        _get_timetable_assignment_choices()
+    )
+
+    if form.validate_on_submit():
+        assignment = db.get_or_404(
+            TeachingAssignment,
+            form.teaching_assignment_id.data,
+        )
+
+        day = form.day_of_week.data
+        start_time = form.start_time.data
+        end_time = form.end_time.data
+        room_number = (
+            form.room_number.data
+            .strip()
+            .upper()
+        )
+
+        class_section_id = getattr(
+            assignment,
+            "class_section_id",
+            getattr(
+                assignment,
+                "class_id",
+                None,
+            ),
+        )
+
+        existing_entries = Timetable.query.filter_by(
+            day_of_week=day,
+        ).all()
+
+        conflict_messages = []
+
+        for existing_entry in existing_entries:
+            if existing_entry.id == timetable_entry.id:
+                continue
+
+            if not getattr(
+                existing_entry,
+                "is_active",
+                True,
+            ):
+                continue
+
+            if not _times_overlap(
+                start_time,
+                end_time,
+                existing_entry.start_time,
+                existing_entry.end_time,
+            ):
+                continue
+
+            existing_assignment = db.session.get(
+                TeachingAssignment,
+                existing_entry.teaching_assignment_id,
+            )
+
+            if existing_assignment is None:
+                continue
+
+            existing_class_id = getattr(
+                existing_assignment,
+                "class_section_id",
+                getattr(
+                    existing_assignment,
+                    "class_id",
+                    None,
+                ),
+            )
+
+            if (
+                existing_assignment.teacher_id
+                == assignment.teacher_id
+            ):
+                conflict_messages.append(
+                    "The selected teacher already has a class "
+                    "during this time."
+                )
+
+            if existing_class_id == class_section_id:
+                conflict_messages.append(
+                    "The selected class section already has another "
+                    "subject during this time."
+                )
+
+            existing_room = str(
+                getattr(
+                    existing_entry,
+                    "room_number",
+                    "",
+                )
+            ).strip().upper()
+
+            if (
+                existing_room
+                and existing_room == room_number
+            ):
+                conflict_messages.append(
+                    "The selected room is already occupied during "
+                    "this time."
+                )
+
+        conflict_messages = list(
+            dict.fromkeys(conflict_messages)
+        )
+
+        if conflict_messages:
+            for message in conflict_messages:
+                form.start_time.errors.append(
+                    message
+                )
+
+        else:
+            try:
+                old_schedule = (
+                    f"{timetable_entry.day_of_week}, "
+                    f"{timetable_entry.start_time} to "
+                    f"{timetable_entry.end_time}, "
+                    f"room {timetable_entry.room_number}"
+                )
+
+                timetable_entry.teaching_assignment_id = (
+                    assignment.id
+                )
+                timetable_entry.day_of_week = day
+                timetable_entry.start_time = start_time
+                timetable_entry.end_time = end_time
+                timetable_entry.room_number = room_number
+                timetable_entry.is_active = (
+                    form.is_active.data
+                )
+
+                audit_log = AuditLog(
+                    user_id=current_user.id,
+                    action="TIMETABLE_ENTRY_UPDATED",
+                    details=(
+                        f"Updated timetable entry "
+                        f"{timetable_entry.id} from "
+                        f"{old_schedule} to {day}, "
+                        f"{start_time.strftime('%H:%M')} to "
+                        f"{end_time.strftime('%H:%M')}, "
+                        f"room {room_number}."
+                    ),
+                )
+
+                db.session.add(audit_log)
+                db.session.commit()
+
+                flash(
+                    "Timetable entry was updated successfully.",
+                    "success",
+                )
+
+                return redirect(
+                    url_for(
+                        "admin.timetable_list"
+                    )
+                )
+
+            except Exception as error:
+                db.session.rollback()
+
+                print(
+                    "EDIT TIMETABLE ERROR:",
+                    error,
+                )
+
+                flash(
+                    (
+                        "The timetable entry could not be updated. "
+                        "Please check the information and try again."
+                    ),
+                    "danger",
+                )
+
+    return render_template(
+        "admin/edit_timetable.html",
+        form=form,
+        timetable_entry=timetable_entry,
     )

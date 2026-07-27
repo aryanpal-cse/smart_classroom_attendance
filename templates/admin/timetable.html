@@ -1,0 +1,226 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Timetable Management · Smart Classroom
+{% endblock %}
+
+{% block content %}
+<section class="dashboard-page">
+    <div class="dashboard-container">
+
+        <div class="page-heading-row">
+            <div>
+                <span class="role-badge role-admin">
+                    Administrator Panel
+                </span>
+
+                <h1>Timetable Management</h1>
+
+                <p>
+                    View class schedules connected to teachers,
+                    subjects and class sections.
+                </p>
+            </div>
+
+            <div class="page-heading-actions">
+                <a
+                    class="secondary-button"
+                    href="{{ url_for('admin.dashboard') }}"
+                >
+                    Back to Dashboard
+                </a>
+
+               <a
+    class="primary-button"
+    href="{{ url_for('admin.add_timetable') }}"
+>
+    Add Timetable Entry
+</a>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <article class="stat-card">
+                <span>Total Entries</span>
+
+                <strong>{{ summary.total }}</strong>
+
+                <p>
+                    All timetable records
+                </p>
+            </article>
+
+            <article class="stat-card">
+                <span>Active Entries</span>
+
+                <strong>{{ summary.active }}</strong>
+
+                <p>
+                    Timetable entries currently enabled
+                </p>
+            </article>
+
+            <article class="stat-card">
+                <span>Inactive Entries</span>
+
+                <strong>{{ summary.inactive }}</strong>
+
+                <p>
+                    Timetable entries currently disabled
+                </p>
+            </article>
+        </div>
+
+        <div class="dashboard-card">
+            <div class="dashboard-card-heading">
+                <div>
+                    <h2>Class Schedule</h2>
+
+                    <p>
+                        Entries are arranged from Monday to Sunday.
+                    </p>
+                </div>
+            </div>
+
+            {% if timetable_rows %}
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Day</th>
+                                <th>Time</th>
+                                <th>Subject</th>
+                                <th>Teacher</th>
+                                <th>Class Section</th>
+                                <th>Room</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for row in timetable_rows %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ row.day }}</strong>
+                                    </td>
+
+                                    <td>
+                                        <strong>
+                                            {{ row.start_time }}
+                                        </strong>
+
+                                        <br>
+
+                                        <small>
+                                            to {{ row.end_time }}
+                                        </small>
+                                    </td>
+
+                                    <td>
+                                        <strong>
+                                            {{ row.subject_name }}
+                                        </strong>
+
+                                        <br>
+
+                                        <small>
+                                            {{ row.subject_code }}
+                                        </small>
+                                    </td>
+
+                                    <td>
+                                        <strong>
+                                            {{ row.teacher_name }}
+                                        </strong>
+
+                                        <br>
+
+                                        <small>
+                                            {{ row.employee_id }}
+                                        </small>
+                                    </td>
+
+                                    <td>
+                                        {{ row.class_name }}
+
+                                        <br>
+
+                                        <small>
+                                            Section {{ row.section }},
+                                            Semester {{ row.semester }}
+                                        </small>
+                                    </td>
+
+                                    <td>
+                                        {{ row.room }}
+                                    </td>
+
+                                    <td>
+                                        {% if row.is_active %}
+                                            <span
+                                                class="
+                                                    table-status
+                                                    status-active
+                                                "
+                                            >
+                                                Active
+                                            </span>
+                                        {% else %}
+                                            <span
+                                                class="
+                                                    table-status
+                                                    status-inactive
+                                                "
+                                            >
+                                                Inactive
+                                            </span>
+                                        {% endif %}
+                                    </td>
+
+                                    <td>
+                                        <a
+    class="table-action-link"
+    href="{{ url_for(
+        'admin.edit_timetable',
+        timetable_id=row.id
+    ) }}"
+>
+    Edit
+</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <h3>No Timetable Entries Found</h3>
+
+                    <p>
+                        No timetable records are currently available.
+                        The Add Timetable function will be enabled in
+                        the next step.
+                    </p>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="demo-account-note">
+            <h2>Current Timetable Status</h2>
+
+            <p>
+                This page reads timetable entries directly from the
+                local SQLite database.
+            </p>
+
+            <p>
+                Adding, editing and validating timetable conflicts
+                will be implemented in the next steps.
+            </p>
+        </div>
+
+    </div>
+</section>
+{% endblock %}

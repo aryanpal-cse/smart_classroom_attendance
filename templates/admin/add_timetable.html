@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Add Timetable Entry · Smart Classroom
+{% endblock %}
+
+{% block content %}
+<section class="dashboard-page">
+    <div class="form-page-container">
+
+        <div class="page-heading-row">
+            <div>
+                <span class="role-badge role-admin">
+                    Administrator Panel
+                </span>
+
+                <h1>Add Timetable Entry</h1>
+
+                <p>
+                    Schedule a teaching assignment for a specific
+                    day, time and classroom.
+                </p>
+            </div>
+
+            <a
+                class="secondary-button"
+                href="{{ url_for('admin.timetable_list') }}"
+            >
+                Back to Timetable
+            </a>
+        </div>
+
+        <div class="management-form-card">
+            <form
+                method="POST"
+                action="{{ url_for('admin.add_timetable') }}"
+                class="management-form"
+                novalidate
+            >
+                {{ form.hidden_tag() }}
+
+                <div class="form-section">
+                    <div class="form-section-heading">
+                        <h2>Schedule Information</h2>
+
+                        <p>
+                            Select the teacher, subject and class
+                            assignment before choosing the schedule.
+                        </p>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group form-group-full">
+                            {{
+                                form.teaching_assignment_id.label(
+                                    class="form-label"
+                                )
+                            }}
+
+                            {{
+                                form.teaching_assignment_id(
+                                    class="form-control"
+                                )
+                            }}
+
+                            {% for error in
+                                form.teaching_assignment_id.errors %}
+                                <p class="form-error">
+                                    {{ error }}
+                                </p>
+                            {% endfor %}
+                        </div>
+
+                        <div class="form-group">
+                            {{
+                                form.day_of_week.label(
+                                    class="form-label"
+                                )
+                            }}
+
+                            {{
+                                form.day_of_week(
+                                    class="form-control"
+                                )
+                            }}
+
+                            {% for error in form.day_of_week.errors %}
+                                <p class="form-error">
+                                    {{ error }}
+                                </p>
+                            {% endfor %}
+                        </div>
+
+                        <div class="form-group">
+                            {{
+                                form.room_number.label(
+                                    class="form-label"
+                                )
+                            }}
+
+                            {{
+                                form.room_number(
+                                    class="form-control",
+                                    placeholder="Example: LAB-201"
+                                )
+                            }}
+
+                            {% for error in form.room_number.errors %}
+                                <p class="form-error">
+                                    {{ error }}
+                                </p>
+                            {% endfor %}
+                        </div>
+
+                        <div class="form-group">
+                            {{
+                                form.start_time.label(
+                                    class="form-label"
+                                )
+                            }}
+
+                            {{
+                                form.start_time(
+                                    class="form-control"
+                                )
+                            }}
+
+                            {% for error in form.start_time.errors %}
+                                <p class="form-error">
+                                    {{ error }}
+                                </p>
+                            {% endfor %}
+                        </div>
+
+                        <div class="form-group">
+                            {{
+                                form.end_time.label(
+                                    class="form-label"
+                                )
+                            }}
+
+                            {{
+                                form.end_time(
+                                    class="form-control"
+                                )
+                            }}
+
+                            {% for error in form.end_time.errors %}
+                                <p class="form-error">
+                                    {{ error }}
+                                </p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="account-option-card">
+                    <label class="checkbox-label">
+                        {{ form.is_active() }}
+
+                        <span>
+                            {{ form.is_active.label.text }}
+                        </span>
+                    </label>
+
+                    <p>
+                        Inactive entries remain stored but are hidden
+                        from active teacher and student schedules.
+                    </p>
+                </div>
+
+                <div class="form-actions">
+                    <a
+                        class="secondary-button"
+                        href="{{ url_for('admin.timetable_list') }}"
+                    >
+                        Cancel
+                    </a>
+
+                    {{ form.submit(class="primary-button") }}
+                </div>
+            </form>
+        </div>
+
+        <div class="demo-account-note">
+            <h2>Automatic Conflict Checks</h2>
+
+            <p>
+                The system prevents overlapping schedules for the
+                same teacher, class section or classroom.
+            </p>
+        </div>
+
+    </div>
+</section>
+{% endblock %}
