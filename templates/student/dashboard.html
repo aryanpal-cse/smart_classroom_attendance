@@ -7,102 +7,499 @@
 {% block content %}
 <section class="dashboard-page">
     <div class="dashboard-container">
-        <div class="dashboard-heading">
+
+        <!-- Page Heading -->
+        <div class="page-heading-row">
             <div>
                 <span class="role-badge role-student">
                     Student Panel
                 </span>
 
-                <h1>
-                    Welcome,
-                    {{ student.full_name if student else current_user.username }}
-                </h1>
+                <h1>Student Dashboard</h1>
 
                 <p>
-                    View your timetable and complete attendance verification.
+                    Welcome,
+                    <strong>{{ student.full_name }}</strong>.
+                    View your subjects, timetable and attendance.
                 </p>
             </div>
-        </div>
 
-        <div class="profile-information-card">
-            <div>
-                <span class="profile-label">Roll Number</span>
-                <strong>
-                    {{ student.roll_number if student else "Not available" }}
-                </strong>
-            </div>
-
-            <div>
-                <span class="profile-label">Class</span>
-                <strong>
-                    {% if student and student.class_section %}
-                        {{ student.class_section.name }}
-                        Section {{ student.class_section.section }}
-                    {% else %}
-                        Not available
-                    {% endif %}
-                </strong>
-            </div>
-
-            <div>
-                <span class="profile-label">Face Registration</span>
-                <strong>
-                    {% if student and student.face_registered %}
-                        Registered
-                    {% else %}
-                        Not Registered
-                    {% endif %}
-                </strong>
+            <div class="page-heading-actions">
+                <a
+                    class="primary-button"
+                    href="{{ url_for('student.subject_list') }}"
+                >
+                    My Subjects
+                </a>
             </div>
         </div>
 
+        <!-- Summary Cards -->
+        <div class="stats-grid">
+            <article class="stat-card">
+                <span>Enrolled Subjects</span>
+
+                <strong>
+                    {{ enrollments|length }}
+                </strong>
+
+                <p>
+                    Active subjects connected to your profile
+                </p>
+            </article>
+
+            <article class="stat-card">
+                <span>Today's Classes</span>
+
+                <strong>
+                    {{ today_timetable|length }}
+                </strong>
+
+                <p>
+                    {{ today_name }} timetable entries
+                </p>
+            </article>
+
+            <article class="stat-card">
+                <span>Attendance Records</span>
+
+                <strong>
+                    {{ attendance.total }}
+                </strong>
+
+                <p>
+                    Total attendance entries recorded
+                </p>
+            </article>
+
+            <article class="stat-card">
+                <span>Attendance Percentage</span>
+
+                <strong>
+                    {{ attendance.percentage }}%
+                </strong>
+
+                <p>
+                    Present and late records combined
+                </p>
+            </article>
+        </div>
+
+        <!-- Student Profile -->
         <div class="dashboard-card">
             <div class="dashboard-card-heading">
-                <h2>Student Modules</h2>
+                <div>
+                    <h2>Student Profile</h2>
 
-                <p>
-                    Attendance features will be enabled in future phases.
-                </p>
+                    <p>
+                        Academic information stored in the local
+                        SQLite database.
+                    </p>
+                </div>
             </div>
 
-            <div class="module-grid">
-                <div class="module-card">
-                    <h3>Today's Timetable</h3>
-                    <p>View scheduled subjects and class timings.</p>
-                    <span class="development-status">Coming in Phase 6</span>
+            <div class="profile-information-grid">
+                <div>
+                    <span>Full Name</span>
+
+                    <strong>
+                        {{ student.full_name }}
+                    </strong>
                 </div>
 
-                <div class="module-card">
-                    <h3>Enter Class Code</h3>
-                    <p>Validate the active temporary class-session code.</p>
-                    <span class="development-status">Coming later</span>
+                <div>
+                    <span>Roll Number</span>
+
+                    <strong>
+                        {{ student.roll_number }}
+                    </strong>
                 </div>
 
-                <div class="module-card">
-                    <h3>Face Verification</h3>
-                    <p>Verify identity using the locally connected camera.</p>
-                    <span class="development-status">Coming later</span>
+                <div>
+                    <span>Programme</span>
+
+                    <strong>
+                        {% if class_section %}
+                            {{ class_section.name }}
+                        {% else %}
+                            Not assigned
+                        {% endif %}
+                    </strong>
                 </div>
 
-                <div class="module-card">
-                    <h3>Attendance History</h3>
-                    <p>View recorded attendance for each subject.</p>
-                    <span class="development-status">Coming later</span>
+                <div>
+                    <span>Section</span>
+
+                    <strong>
+                        {% if class_section %}
+                            {{ class_section.section }}
+                        {% else %}
+                            —
+                        {% endif %}
+                    </strong>
                 </div>
 
-                <div class="module-card">
-                    <h3>Attendance Percentage</h3>
-                    <p>View overall and subject-wise attendance percentages.</p>
-                    <span class="development-status">Coming later</span>
+                <div>
+                    <span>Semester</span>
+
+                    <strong>
+                        {% if class_section %}
+                            {{ class_section.semester }}
+                        {% else %}
+                            —
+                        {% endif %}
+                    </strong>
                 </div>
 
-                <div class="module-card">
-                    <h3>Low Attendance Warning</h3>
-                    <p>Receive a warning when attendance falls below 75%.</p>
-                    <span class="development-status">Coming later</span>
+                <div>
+                    <span>Academic Year</span>
+
+                    <strong>
+                        {% if class_section %}
+                            {{ class_section.academic_year }}
+                        {% else %}
+                            —
+                        {% endif %}
+                    </strong>
                 </div>
             </div>
         </div>
+
+        <!-- Today's Timetable -->
+        <div class="dashboard-card">
+            <div class="dashboard-card-heading">
+                <div>
+                    <h2>Today's Timetable</h2>
+
+                    <p>
+                        Scheduled classes for
+                        <strong>{{ today_name }}</strong>.
+                    </p>
+                </div>
+            </div>
+
+            {% if today_timetable %}
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Subject</th>
+                                <th>Class Section</th>
+                                <th>Room</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for entry in today_timetable %}
+                                <tr>
+                                    <td>
+                                        <strong>
+                                            {{ entry.start_time }}
+                                        </strong>
+
+                                        <br>
+
+                                        <small>
+                                            to {{ entry.end_time }}
+                                        </small>
+                                    </td>
+
+                                    <td>
+                                        <strong>
+                                            {{ entry.subject_name }}
+                                        </strong>
+
+                                        <br>
+
+                                        <small>
+                                            {{ entry.subject_code }}
+                                        </small>
+                                    </td>
+
+                                    <td>
+                                        {{ entry.class_name }}
+
+                                        <br>
+
+                                        <small>
+                                            Section {{ entry.section }}
+                                        </small>
+                                    </td>
+
+                                    <td>
+                                        {{ entry.room }}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <h3>No Classes Scheduled Today</h3>
+
+                    <p>
+                        There are no active timetable entries for
+                        {{ today_name }}.
+                    </p>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Enrolled Subjects -->
+        <div class="dashboard-card">
+            <div class="dashboard-card-heading">
+                <div>
+                    <h2>Enrolled Subjects</h2>
+
+                    <p>
+                        Subjects connected to your active enrolments.
+                    </p>
+                </div>
+
+                <a
+                    class="secondary-button"
+                    href="{{ url_for('student.subject_list') }}"
+                >
+                    View All Subjects
+                </a>
+            </div>
+
+            {% if enrollments %}
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Subject</th>
+                                <th>Subject Code</th>
+                                <th>Programme</th>
+                                <th>Section</th>
+                                <th>Semester</th>
+                                <th>Academic Year</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for enrollment in enrollments %}
+                                <tr>
+                                    <td>
+                                        <strong>
+                                            {{ enrollment.subject_name }}
+                                        </strong>
+                                    </td>
+
+                                    <td>
+                                        {{ enrollment.subject_code }}
+                                    </td>
+
+                                    <td>
+                                        {{ enrollment.class_name }}
+                                    </td>
+
+                                    <td>
+                                        Section {{ enrollment.section }}
+                                    </td>
+
+                                    <td>
+                                        Semester
+                                        {{ enrollment.semester }}
+                                    </td>
+
+                                    <td>
+                                        {{ enrollment.academic_year }}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <h3>No Enrolled Subjects</h3>
+
+                    <p>
+                        No active subject enrolments are connected to
+                        this student profile.
+                    </p>
+
+                    <a
+                        class="primary-button"
+                        href="{{ url_for('student.subject_list') }}"
+                    >
+                        Open My Subjects
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Complete Timetable -->
+        <div class="dashboard-card">
+            <div class="dashboard-card-heading">
+                <div>
+                    <h2>Complete Timetable</h2>
+
+                    <p>
+                        All active timetable entries connected to your
+                        enrolled subjects.
+                    </p>
+                </div>
+            </div>
+
+            {% if full_timetable %}
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Day</th>
+                                <th>Time</th>
+                                <th>Subject</th>
+                                <th>Class Section</th>
+                                <th>Room</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for entry in full_timetable %}
+                                <tr>
+                                    <td>
+                                        <strong>
+                                            {{ entry.day }}
+                                        </strong>
+                                    </td>
+
+                                    <td>
+                                        {{ entry.start_time }}
+
+                                        <br>
+
+                                        <small>
+                                            to {{ entry.end_time }}
+                                        </small>
+                                    </td>
+
+                                    <td>
+                                        <strong>
+                                            {{ entry.subject_name }}
+                                        </strong>
+
+                                        <br>
+
+                                        <small>
+                                            {{ entry.subject_code }}
+                                        </small>
+                                    </td>
+
+                                    <td>
+                                        {{ entry.class_name }}
+
+                                        <br>
+
+                                        <small>
+                                            Section {{ entry.section }}
+                                        </small>
+                                    </td>
+
+                                    <td>
+                                        {{ entry.room }}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <h3>No Timetable Entries Found</h3>
+
+                    <p>
+                        No timetable entries are currently connected
+                        to your enrolled subjects.
+                    </p>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Attendance Summary -->
+        <div class="dashboard-card">
+            <div class="dashboard-card-heading">
+                <div>
+                    <h2>Attendance Summary</h2>
+
+                    <p>
+                        Current attendance records stored for this
+                        student.
+                    </p>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <article class="stat-card">
+                    <span>Present</span>
+
+                    <strong>
+                        {{ attendance.present }}
+                    </strong>
+
+                    <p>
+                        Successfully marked present
+                    </p>
+                </article>
+
+                <article class="stat-card">
+                    <span>Absent</span>
+
+                    <strong>
+                        {{ attendance.absent }}
+                    </strong>
+
+                    <p>
+                        Classes marked absent
+                    </p>
+                </article>
+
+                <article class="stat-card">
+                    <span>Late</span>
+
+                    <strong>
+                        {{ attendance.late }}
+                    </strong>
+
+                    <p>
+                        Attendance recorded as late
+                    </p>
+                </article>
+
+                <article class="stat-card">
+                    <span>Pending Review</span>
+
+                    <strong>
+                        {{ attendance.pending }}
+                    </strong>
+
+                    <p>
+                        Records waiting for review
+                    </p>
+                </article>
+            </div>
+        </div>
+
+        <!-- Development Status -->
+        <div class="demo-account-note">
+            <h2>Current Student Panel Status</h2>
+
+            <p>
+                This dashboard loads the student's profile, class,
+                enrolled subjects, timetable and attendance summary
+                from the local SQLite database.
+            </p>
+
+            <p>
+                Joining a live class with a temporary class code and
+                face verification will be added in upcoming phases.
+            </p>
+        </div>
+
     </div>
 </section>
 {% endblock %}
