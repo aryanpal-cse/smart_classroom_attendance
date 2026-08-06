@@ -45,6 +45,22 @@ class Teacher(db.Model):
         default="Computer Science and Engineering",
     )
 
+    designation = db.Column(
+        db.String(100),
+        nullable=False,
+        default="Assistant Professor",
+    )
+
+    phone = db.Column(
+        db.String(20),
+        nullable=True,
+    )
+
+    joining_date = db.Column(
+        db.Date,
+        nullable=True,
+    )
+
     created_at = db.Column(
         db.DateTime,
         nullable=False,

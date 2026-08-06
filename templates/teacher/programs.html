@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block title %}My Programs & Sections · Teacher Panel{% endblock %}
+{% block content %}
+<section class="dashboard-page"><div class="dashboard-container">
+    <div class="page-heading-row"><div><span class="role-badge role-teacher">My Programs &amp; Sections</span><h1>Assigned Programs</h1><p>Programs and sections connected to {{ teacher.full_name }}.</p></div><a class="secondary-button" href="{{ url_for('teacher.dashboard') }}">Teacher Dashboard</a></div>
+    <div class="dashboard-action-grid">{% for program in programs %}<article class="dashboard-action-card"><div><h2>{{ program.class_name }} · Section {{ program.section }}</h2><p>Semester {{ program.semester }} · {{ program.academic_year }}</p><div class="subject-chip-row">{% for subject in program.subjects %}<span>{{ subject.name }} ({{ subject.code }})</span>{% endfor %}</div></div><strong>{{ program.subjects|length }} subject{% if program.subjects|length != 1 %}s{% endif %}</strong></article>{% else %}<div class="empty-state"><h3>No Program Assigned</h3><p>No active program or section is connected to this teacher.</p></div>{% endfor %}</div>
+</div></section>
+{% endblock %}

@@ -61,6 +61,8 @@
                                 <th>Username</th>
                                 <th>Email</th>
                                 <th>Department</th>
+                                <th>Designation</th>
+                                <th>Phone</th>
                                 <th>Assignments</th>
                                 <th>Account Status</th>
                                 <th>Actions</th>
@@ -108,6 +110,9 @@
                                             Not provided
                                         {% endif %}
                                     </td>
+
+                                    <td>{{ teacher.designation }}</td>
+                                    <td>{{ teacher.phone or 'Not provided' }}</td>
 
                                     <!-- Teaching Assignments -->
                                     <td>
@@ -197,8 +202,7 @@
             </p>
 
             <p>
-                Teaching assignments will be managed separately
-                in a later phase.
+                Teaching assignments, timetables and attendance are available from Teacher Management.
             </p>
         </div>
 

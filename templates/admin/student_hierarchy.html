@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }} · Student Management{% endblock %}
+
+{% block content %}
+<section class="dashboard-page">
+    <div class="dashboard-container">
+        <div class="breadcrumb-row">
+            {% for label, target in breadcrumb %}
+                {% if target %}
+                    <a href="{{ target }}">{{ label }}</a>
+                {% else %}
+                    <span>{{ label }}</span>
+                {% endif %}
+                {% if not loop.last %}<strong>›</strong>{% endif %}
+            {% endfor %}
+        </div>
+
+        <div class="page-heading-row">
+            <div>
+                <span class="role-badge role-student">{{ level }}</span>
+                <h1>{{ title }}</h1>
+                <p>{{ description }}</p>
+            </div>
+            <div class="page-heading-actions">
+                <a class="secondary-button" href="{{ url_for('admin.dashboard') }}">Admin Dashboard</a>
+                {% if level == 'Course' %}
+                    <a class="primary-button" href="{{ url_for('admin.add_student') }}">Add Student</a>
+                {% endif %}
+            </div>
+        </div>
+
+        {% if level == 'Course' %}
+            <section class="dashboard-card" aria-labelledby="student-tools-heading">
+                <div class="dashboard-card-heading">
+                    <div>
+                        <h2 id="student-tools-heading">Student Features</h2>
+                        <p>Each student-management feature opens separately.</p>
+                    </div>
+                </div>
+
+                <div class="feature-option-grid">
+                    <article class="feature-option-card">
+                        <div class="feature-option-icon" aria-hidden="true">S</div>
+                        <div><h3>All Students</h3><p>Search and edit every student profile.</p></div>
+                        <a class="feature-option-button" href="{{ url_for('admin.student_list') }}">Open Student List</a>
+                    </article>
+                    <article class="feature-option-card">
+                        <div class="feature-option-icon" aria-hidden="true">C</div>
+                        <div><h3>Courses &amp; Sections</h3><p>Create and update course, branch, group and section records.</p></div>
+                        <a class="feature-option-button" href="{{ url_for('admin.class_list') }}">Manage Sections</a>
+                    </article>
+                    <article class="feature-option-card">
+                        <div class="feature-option-icon" aria-hidden="true">W</div>
+                        <div><h3>Section Timetables</h3><p>View and edit the weekly timetable for each section.</p></div>
+                        <a class="feature-option-button" href="{{ url_for('admin.section_timetable') }}">Open Timetables</a>
+                    </article>
+                    <article class="feature-option-card">
+                        <div class="feature-option-icon" aria-hidden="true">R</div>
+                        <div><h3>Attendance Records</h3><p>Review and correct individual attendance entries.</p></div>
+                        <a class="feature-option-button" href="{{ url_for('admin.attendance_records') }}">Open Records</a>
+                    </article>
+                    <article class="feature-option-card">
+                        <div class="feature-option-icon" aria-hidden="true">%</div>
+                        <div><h3>Attendance Analytics</h3><p>Compare attendance percentages and low-attendance students.</p></div>
+                        <a class="feature-option-button" href="{{ url_for('admin.attendance_analytics') }}">Open Analytics</a>
+                    </article>
+                    <article class="feature-option-card">
+                        <div class="feature-option-icon" aria-hidden="true">+</div>
+                        <div><h3>Add Student</h3><p>Create a student account and assign a class section.</p></div>
+                        <a class="feature-option-button" href="{{ url_for('admin.add_student') }}">Add New Student</a>
+                    </article>
+                </div>
+            </section>
+        {% endif %}
+
+        <section class="dashboard-card section-gap" aria-labelledby="hierarchy-heading">
+            <div class="dashboard-card-heading">
+                <div>
+                    <h2 id="hierarchy-heading">{{ title }}</h2>
+                    <p>
+                        {% if level == 'Course' %}
+                            Continue in order: Course → Branch → Academic Year → Group → Section.
+                        {% else %}
+                            Select one option to continue to the next level.
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+
+            <div class="dashboard-action-grid hierarchy-card-grid">
+                {% for item in items %}
+                    {% if level == 'Course' %}
+                        {% set target = url_for('admin.student_branch_selection', course=item.name) %}
+                    {% elif level == 'Branch' %}
+                        {% set target = url_for('admin.student_year_selection', course=course, branch=item.name) %}
+                    {% elif level == 'Academic Year' %}
+                        {% set target = url_for('admin.student_group_selection', course=course, branch=branch, year=item.name) %}
+                    {% elif level == 'Group' %}
+                        {% set target = url_for('admin.student_section_selection', course=course, branch=branch, year=academic_year, group=item.group_name, semester=item.semester) %}
+                    {% else %}
+                        {% set target = url_for('admin.student_section_detail', class_id=item.id) %}
+                    {% endif %}
+
+                    <a class="dashboard-action-card compact-action-card" href="{{ target }}">
+                        <div>
+                            <span class="card-kicker">{{ level }}</span>
+                            <h3>{{ item.name }}</h3>
+                            <p>
+                                {{ item.section_count }} section{% if item.section_count != 1 %}s{% endif %}
+                                · {{ item.student_count }} student{% if item.student_count != 1 %}s{% endif %}
+                            </p>
+                        </div>
+                        <strong>Continue →</strong>
+                    </a>
+                {% else %}
+                    <div class="empty-state full-grid-empty">
+                        <h3>No Records Found</h3>
+                        <p>No academic record exists at this level.</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+    </div>
+</section>
+{% endblock %}

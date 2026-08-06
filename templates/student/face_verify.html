@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Face Verification · Smart Classroom
+{% endblock %}
+
+{% block content %}
+<section class="dashboard-page">
+    <div class="dashboard-container">
+        <div class="page-heading-row">
+            <div>
+                <span class="role-badge role-student">
+                    Attendance Step 2
+                </span>
+
+                <h1>Face Verification</h1>
+
+                <p>
+                    {{ assignment.subject.name }}
+                    · {{ assignment.class_section.course }}
+                    {{ assignment.class_section.name }}
+                    · Section {{ assignment.class_section.section }}
+                </p>
+            </div>
+
+            <a
+                class="secondary-button"
+                href="{{ url_for('student.join_class') }}"
+            >
+                Enter Another Code
+            </a>
+        </div>
+
+        {% if not face_registered %}
+            <div class="feature-alert feature-alert-warning">
+                <strong>Face registration is required.</strong>
+                Register your face before automatic verification.
+
+                <a href="{{ url_for('student.register_face') }}">
+                    Open Face Registration
+                </a>
+            </div>
+        {% endif %}
+
+        <div class="camera-panel">
+            <video
+                id="cameraVideo"
+                class="camera-preview"
+                autoplay
+                playsinline
+            ></video>
+
+            <canvas
+                id="cameraCanvas"
+                class="camera-canvas"
+            ></canvas>
+
+            <form method="POST" id="cameraForm">
+                {{ form.hidden_tag() }}
+                {{ form.image_data(id="imageData") }}
+
+                <div class="camera-controls">
+                    <button
+                        type="button"
+                        class="secondary-button"
+                        id="startCamera"
+                    >
+                        Start Camera
+                    </button>
+
+                    <button
+                        type="button"
+                        class="primary-button"
+                        id="captureImage"
+                        {% if not face_registered %}disabled{% endif %}
+                    >
+                        Verify Face
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div class="feature-alert">
+            Manual review becomes available automatically only when
+            face verification fails or the local recognition service
+            is unavailable. Attendance is never recorded from the
+            temporary code alone.
+        </div>
+
+        <div class="feature-alert">
+            The displayed similarity is a prototype LBPH comparison
+            score. It is not presented as a real-world biometric
+            accuracy percentage.
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script
+    src="{{ url_for('static', filename='js/camera_capture.js') }}"
+></script>
+{% endblock %}

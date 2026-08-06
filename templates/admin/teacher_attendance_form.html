@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}{{ page_title }} · Smart Classroom{% endblock %}
+{% block content %}
+<section class="dashboard-page"><div class="form-page-container">
+    <div class="page-heading-row"><div><span class="role-badge role-teacher">Teacher Attendance</span><h1>{{ page_title }}</h1><p>Admin corrections are recorded in the audit log.</p></div><a class="secondary-button" href="{{ url_for('admin.teacher_attendance_list') }}">Back to Records</a></div>
+    <div class="management-form-card"><form method="POST" class="management-form">{{ form.hidden_tag() }}
+        <div class="form-grid">
+            {% for field in [form.teacher_id, form.attendance_date, form.status, form.check_in, form.check_out, form.scheduled_classes, form.conducted_classes, form.remarks] %}
+                <div class="form-group"><label class="form-label" for="{{ field.id }}">{{ field.label.text }}</label>{{ field(class="form-control") }}{% for error in field.errors %}<p class="form-error">{{ error }}</p>{% endfor %}</div>
+            {% endfor %}
+        </div>
+        <div class="form-actions"><a class="secondary-button" href="{{ url_for('admin.teacher_attendance_list') }}">Cancel</a>{{ form.submit(class="primary-button") }}</div>
+    </form></div>
+</div></section>
+{% endblock %}

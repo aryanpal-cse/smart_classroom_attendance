@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}My Course & Section · Smart Classroom{% endblock %}
+{% block content %}
+<section class="dashboard-page"><div class="dashboard-container">
+    <div class="page-heading-row"><div><span class="role-badge role-student">My Academic Path</span><h1>Course &amp; Section</h1><p>Only the academic placement assigned to {{ student.full_name }} is shown.</p></div></div>
+    {% if class_section %}
+        <div class="academic-path-card"><span>{{ class_section.course }}</span><strong>›</strong><span>{{ class_section.name }}</span><strong>›</strong><span>{{ class_section.academic_year }}</span><strong>›</strong><span>{{ class_section.group_name }}</span><strong>›</strong><span>Section {{ class_section.section }}</span></div>
+        <div class="profile-information-grid"><div><span>Course</span><strong>{{ class_section.course }}</strong></div><div><span>Branch</span><strong>{{ class_section.name }}</strong></div><div><span>Academic Year</span><strong>{{ class_section.academic_year }}</strong></div><div><span>Semester</span><strong>{{ class_section.semester }}</strong></div><div><span>Group / Batch</span><strong>{{ class_section.group_name }}</strong></div><div><span>Section</span><strong>{{ class_section.section }}</strong></div></div>
+    {% else %}<div class="empty-state"><h3>No Section Assigned</h3><p>Ask the administrator to assign your academic section.</p></div>{% endif %}
+</div></section>
+{% endblock %}

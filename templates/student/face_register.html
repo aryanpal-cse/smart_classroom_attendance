@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Face Registration · Smart Classroom{% endblock %}
+{% block content %}
+<section class="dashboard-page"><div class="dashboard-container">
+    <div class="page-heading-row"><div><span class="role-badge role-student">Local AI Setup</span><h1>Register My Face</h1><p>Capture {{ target }} clear samples. Images stay in this local project folder.</p></div></div>
+    <div class="stats-grid">
+        <article class="stat-card"><span>Samples</span><strong>{{ sample_count }}/{{ target }}</strong><p>Different small angles improve the demo.</p></article>
+        <article class="stat-card"><span>Model Status</span><strong>{{ 'Trained' if trained else 'Not Ready' }}</strong><p>OpenCV LBPH local recognizer</p></article>
+    </div>
+    <div class="camera-panel section-gap">
+        <video id="cameraVideo" class="camera-preview" autoplay playsinline></video>
+        <canvas id="cameraCanvas" class="camera-canvas"></canvas>
+        <div class="progress-track"><div class="progress-value" style="width: {{ progress }}%"></div></div>
+        <form method="POST" id="cameraForm">
+            {{ form.hidden_tag() }}
+            {{ form.image_data(id="imageData") }}
+            <div class="camera-controls"><button type="button" class="secondary-button" id="startCamera">Start Camera</button><button type="button" class="primary-button" id="captureImage">Capture Sample</button></div>
+        </form>
+    </div>
+    <div class="feature-alert feature-alert-warning">Use one person only, face the camera, avoid backlight and do not upload real student images when sharing the project ZIP publicly.</div>
+</div></section>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/camera_capture.js') }}"></script>{% endblock %}

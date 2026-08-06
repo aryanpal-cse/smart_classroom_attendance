@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}{{ department_name }} · Teacher Management{% endblock %}
+{% block content %}
+<section class="dashboard-page">
+    <div class="dashboard-container">
+        <div class="page-heading-row">
+            <div>
+                <span class="role-badge role-teacher">Teacher Department</span>
+                <h1>{{ department_name or 'Department' }}</h1>
+                <p>Select a teacher to view profile, classes, timetable and attendance.</p>
+            </div>
+            <a class="secondary-button" href="{{ url_for('admin.teacher_management_home') }}">Back to Departments</a>
+        </div>
+
+        <div class="dashboard-action-grid">
+            {% for teacher in teachers %}
+                <a class="dashboard-action-card" href="{{ url_for('admin.teacher_detail', teacher_id=teacher.id) }}">
+                    <div>
+                        <h2>{{ teacher.full_name }}</h2>
+                        <p>{{ teacher.employee_id }} · {{ teacher.email or 'No email' }}</p>
+                        <p>{{ teacher.teaching_assignments|length }} teaching assignments</p>
+                    </div>
+                    <strong>Open Teacher Record →</strong>
+                </a>
+            {% else %}
+                <div class="empty-state">
+                    <h3>No Teachers Found</h3>
+                    <p>No teacher is registered under this department.</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

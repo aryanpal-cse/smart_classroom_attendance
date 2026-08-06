@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} · Smart Classroom{% endblock %}
+{% block content %}
+<section class="dashboard-page"><div class="dashboard-container"><div class="empty-state">
+    <span class="role-badge role-student">Attendance Result</span>
+    <h1>{{ title }}</h1><p>{{ message }}</p>
+    <p><strong>{{ assignment.subject.name }}</strong> · {{ assignment.class_section.name }} Section {{ assignment.class_section.section }} · {{ class_session.session_date.strftime('%d %b %Y') }}</p>
+    {% if similarity_score is not none %}<p>Prototype similarity score: <strong>{{ similarity_score }}%</strong></p>{% endif %}
+    {% if review %}<p>Review status: <strong>{{ review.status|title }}</strong></p>{% endif %}
+    <div class="page-heading-actions"><a class="secondary-button" href="{{ url_for('student.dashboard') }}">Student Dashboard</a><a class="primary-button" href="{{ url_for('student.attendance') }}">My Attendance</a></div>
+</div></div></section>
+{% endblock %}

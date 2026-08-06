@@ -1,15 +1,71 @@
-<article class="module-card">
-    <h3>Class Sections</h3>
+{% extends "base.html" %}
 
-    <p>
-        Manage programmes, sections, semesters
-        and academic-year information.
-    </p>
+{% block title %}Admin Dashboard · Smart Classroom{% endblock %}
 
-    <a
-        class="module-action-link"
-        href="{{ url_for('admin.class_list') }}"
-    >
-        Open Class Management
-    </a>
-</article>
+{% block content %}
+<section class="dashboard-page">
+    <div class="dashboard-container admin-dashboard-shell">
+        <div class="page-heading-row admin-welcome-heading">
+            <div>
+                <span class="role-badge role-admin">Administrator Panel</span>
+                <h1>Choose a Management Area</h1>
+                <p>
+                    Teacher records and student-section records are kept in
+                    two clearly separated areas.
+                </p>
+            </div>
+        </div>
+
+        <div class="admin-main-choice-grid">
+            <article class="admin-main-choice teacher-choice-card">
+                <div class="choice-icon" aria-hidden="true">T</div>
+                <div class="choice-content">
+                    <span class="choice-eyebrow">Teacher Section</span>
+                    <h2>Teacher Management</h2>
+                    <p>
+                        Departments, teacher profiles, designations, teaching
+                        assignments, weekly timetables, class records and
+                        teacher attendance.
+                    </p>
+                    <div class="choice-metrics">
+                        <span>{{ totals.teachers }} Teachers</span>
+                        <span>{{ totals.subjects }} Subjects</span>
+                    </div>
+                </div>
+                <a
+                    class="choice-button teacher-choice-button"
+                    href="{{ url_for('admin.teacher_management_home') }}"
+                >
+                    Open Teacher Management
+                </a>
+            </article>
+
+            <article
+                class="admin-main-choice student-choice-card"
+                data-section-list-url="{{ url_for('admin.class_list') }}"
+            >
+                <div class="choice-icon" aria-hidden="true">S</div>
+                <div class="choice-content">
+                    <span class="choice-eyebrow">Student Section</span>
+                    <h2>Student Management</h2>
+                    <p>
+                        Course → Branch → Academic Year → Group → Class Sections,
+                        followed by student lists, section timetables and
+                        attendance records.
+                    </p>
+                    <div class="choice-metrics">
+                        <span>{{ totals.students }} Students</span>
+                        <span>{{ totals.classes }} Sections</span>
+                    </div>
+                </div>
+                <a
+                    class="choice-button student-choice-button"
+                    href="{{ url_for('admin.student_management_home') }}"
+                >
+                    Open Student Management
+                </a>
+            </article>
+        </div>
+    </div>
+</section>
+{% endblock %}

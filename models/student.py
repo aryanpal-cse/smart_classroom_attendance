@@ -46,6 +46,11 @@ class Student(db.Model):
         nullable=True,
     )
 
+    phone = db.Column(
+        db.String(20),
+        nullable=True,
+    )
+
     face_registered = db.Column(
         db.Boolean,
         nullable=False,

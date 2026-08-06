@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}My Weekly Timetable · Student Panel{% endblock %}
+{% block content %}
+<section class="dashboard-page"><div class="dashboard-container">
+    <div class="page-heading-row"><div><span class="role-badge role-student">Weekly Timetable</span><h1>{{ student.full_name }}'s Timetable</h1><p>{% if class_section %}{{ class_section.name }} · Section {{ class_section.section }} · Semester {{ class_section.semester }}{% else %}Section not assigned{% endif %}</p></div><a class="secondary-button" href="{{ url_for('student.dashboard') }}">Student Dashboard</a></div>
+    <div class="weekly-schedule-grid">{% for day in week_days %}<article class="day-schedule-card">
+                    <h2>{{ day }}</h2>
+                    <p class="day-date">
+                        {{ week_dates[day].strftime('%d %b %Y') }}
+                    </p>{% if weekly_timetable[day] %}{% for row in weekly_timetable[day] %}<div class="schedule-entry"><strong>{{ row.start_time }}–{{ row.end_time }}</strong><span>{{ row.subject_name }} ({{ row.subject_code }})</span><small>Teacher: {{ row.teacher_name }}</small><small>Room: {{ row.room }}</small></div>{% endfor %}{% else %}<p class="no-class-text">No class scheduled</p>{% endif %}</article>{% endfor %}</div>
+</div></section>
+{% endblock %}

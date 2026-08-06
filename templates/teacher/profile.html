@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}My Profile · Teacher Panel{% endblock %}
+{% block content %}
+<section class="dashboard-page"><div class="dashboard-container">
+    <div class="page-heading-row"><div><span class="role-badge role-teacher">My Profile</span><h1>{{ teacher.full_name }}</h1><p>This profile belongs to the currently logged-in teacher.</p></div><a class="secondary-button" href="{{ url_for('teacher.dashboard') }}">Teacher Dashboard</a></div>
+    <div class="profile-information-grid">
+        <div><span>Full Name</span><strong>{{ teacher.full_name }}</strong></div><div><span>Employee ID</span><strong>{{ teacher.employee_id }}</strong></div><div><span>Department</span><strong>{{ teacher.department }}</strong></div><div><span>Designation</span><strong>{{ teacher.designation }}</strong></div><div><span>Phone</span><strong>{{ teacher.phone or 'Not provided' }}</strong></div><div><span>Joining Date</span><strong>{{ teacher.joining_date.strftime('%d %b %Y') if teacher.joining_date else 'Not provided' }}</strong></div><div><span>Email</span><strong>{{ teacher.email or 'Not provided' }}</strong></div><div><span>Username</span><strong>{{ teacher.user.username }}</strong></div><div><span>Account Status</span><strong>{{ 'Active' if teacher.user.is_active else 'Inactive' }}</strong></div><div><span>Assigned Classes</span><strong>{{ assignment_count }}</strong></div><div><span>Attendance</span><strong>{{ attendance_summary.percentage }}%</strong></div>
+    </div>
+    <div class="demo-account-note"><h2>Profile control</h2><p>Employee ID, department and academic assignments are controlled by the administrator.</p></div>
+</div></section>
+{% endblock %}

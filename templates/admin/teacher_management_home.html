@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+
+{% block title %}Teacher Management · Smart Classroom{% endblock %}
+
+{% block content %}
+<section class="dashboard-page">
+    <div class="dashboard-container">
+        <div class="page-heading-row">
+            <div>
+                <span class="role-badge role-teacher">Teacher Management</span>
+                <h1>Teacher Management</h1>
+                <p>
+                    Every teacher feature is available as a separate option.
+                    Start with a department or open a direct management tool.
+                </p>
+            </div>
+
+            <div class="page-heading-actions">
+                <a class="secondary-button" href="{{ url_for('admin.dashboard') }}">
+                    Admin Dashboard
+                </a>
+                <a class="primary-button" href="{{ url_for('admin.add_teacher') }}">
+                    Add Teacher
+                </a>
+            </div>
+        </div>
+
+        <div class="stats-grid management-summary-grid">
+            <article class="stat-card">
+                <span>Total Teachers</span>
+                <strong>{{ teacher_count }}</strong>
+                <p>Registered teacher profiles</p>
+            </article>
+            <article class="stat-card">
+                <span>Departments</span>
+                <strong>{{ departments|length }}</strong>
+                <p>Academic departments</p>
+            </article>
+        </div>
+
+        <section class="dashboard-card section-gap" aria-labelledby="teacher-tools-heading">
+            <div class="dashboard-card-heading">
+                <div>
+                    <h2 id="teacher-tools-heading">Teacher Features</h2>
+                    <p>Select one feature. Each option opens on its own page.</p>
+                </div>
+            </div>
+
+            <div class="feature-option-grid">
+                <article class="feature-option-card">
+                    <div class="feature-option-icon" aria-hidden="true">D</div>
+                    <div>
+                        <h3>Departments</h3>
+                        <p>Browse teachers department by department.</p>
+                    </div>
+                    <a class="feature-option-button" href="#departments">Browse Departments</a>
+                </article>
+
+                <article class="feature-option-card">
+                    <div class="feature-option-icon" aria-hidden="true">T</div>
+                    <div>
+                        <h3>All Teachers</h3>
+                        <p>View names, employee IDs, designations and account status.</p>
+                    </div>
+                    <a class="feature-option-button" href="{{ url_for('admin.teacher_list') }}">Open Teacher List</a>
+                </article>
+
+                <article class="feature-option-card">
+                    <div class="feature-option-icon" aria-hidden="true">A</div>
+                    <div>
+                        <h3>Teaching Assignments</h3>
+                        <p>Assign subjects, courses, groups and sections to teachers.</p>
+                    </div>
+                    <a class="feature-option-button" href="{{ url_for('admin.assignment_list') }}">Manage Assignments</a>
+                </article>
+
+                <article class="feature-option-card">
+                    <div class="feature-option-icon" aria-hidden="true">W</div>
+                    <div>
+                        <h3>Teacher Timetables</h3>
+                        <p>View each teacher's combined weekly class schedule.</p>
+                    </div>
+                    <a class="feature-option-button" href="{{ url_for('admin.teacher_timetables') }}">Open Timetables</a>
+                </article>
+
+                <article class="feature-option-card">
+                    <div class="feature-option-icon" aria-hidden="true">P</div>
+                    <div>
+                        <h3>Teacher Attendance</h3>
+                        <p>Manage present, absent, late, leave and check-in records.</p>
+                    </div>
+                    <a class="feature-option-button" href="{{ url_for('admin.teacher_attendance_list') }}">Open Attendance</a>
+                </article>
+
+                <article class="feature-option-card">
+                    <div class="feature-option-icon" aria-hidden="true">L</div>
+                    <div>
+                        <h3>Audit Logs</h3>
+                        <p>Review administrator changes and attendance corrections.</p>
+                    </div>
+                    <a class="feature-option-button" href="{{ url_for('admin.audit_logs') }}">Open Audit Logs</a>
+                </article>
+            </div>
+        </section>
+
+        <section class="dashboard-card section-gap" id="departments" aria-labelledby="departments-heading">
+            <div class="dashboard-card-heading split-card-heading">
+                <div>
+                    <h2 id="departments-heading">Select Department</h2>
+                    <p>Choose a department, then select a teacher profile.</p>
+                </div>
+                <a class="secondary-button" href="{{ url_for('admin.add_teacher') }}">Add New Teacher</a>
+            </div>
+
+            <div class="dashboard-action-grid department-card-grid">
+                {% for department in departments %}
+                    <a
+                        class="dashboard-action-card compact-action-card"
+                        href="{{ url_for('admin.teacher_department', name=department.name) }}"
+                    >
+                        <div>
+                            <span class="card-kicker">Department</span>
+                            <h3>{{ department.name }}</h3>
+                            <p>{{ department.teacher_count }} teacher profile{% if department.teacher_count != 1 %}s{% endif %}</p>
+                        </div>
+                        <strong>Open Department →</strong>
+                    </a>
+                {% else %}
+                    <div class="empty-state full-grid-empty">
+                        <h3>No Departments Found</h3>
+                        <p>Add a teacher profile to create the first department.</p>
+                        <a class="primary-button empty-state-button" href="{{ url_for('admin.add_teacher') }}">Add Teacher</a>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+    </div>
+</section>
+{% endblock %}

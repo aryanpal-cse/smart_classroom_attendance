@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}
-    My Subjects · Smart Classroom
+    My Subjects · Student Panel
 {% endblock %}
 
 {% block content %}
@@ -11,14 +11,14 @@
         <div class="page-heading-row">
             <div>
                 <span class="role-badge role-student">
-                    Student Panel
+                    My Subjects
                 </span>
 
-                <h1>My Subjects</h1>
+                <h1>{{ student.full_name }} · My Subjects</h1>
 
                 <p>
-                    View the subjects assigned to
-                    <strong>{{ student.full_name }}</strong>.
+                    View the subjects and teachers assigned to your
+                    class section.
                 </p>
             </div>
 
@@ -29,74 +29,13 @@
                 >
                     Back to Dashboard
                 </a>
-            </div>
-        </div>
 
-        <div class="dashboard-card">
-            <div class="dashboard-card-heading">
-                <div>
-                    <h2>Academic Information</h2>
-
-                    <p>
-                        Your current programme, section and semester.
-                    </p>
-                </div>
-            </div>
-
-            <div class="profile-information-grid">
-                <div>
-                    <span>Roll Number</span>
-                    <strong>{{ student.roll_number }}</strong>
-                </div>
-
-                <div>
-                    <span>Programme</span>
-                    <strong>
-                        {% if class_section %}
-                            {{ class_section.name }}
-                        {% else %}
-                            Not assigned
-                        {% endif %}
-                    </strong>
-                </div>
-
-                <div>
-                    <span>Section</span>
-                    <strong>
-                        {% if class_section %}
-                            {{ class_section.section }}
-                        {% else %}
-                            —
-                        {% endif %}
-                    </strong>
-                </div>
-
-                <div>
-                    <span>Semester</span>
-                    <strong>
-                        {% if class_section %}
-                            {{ class_section.semester }}
-                        {% else %}
-                            —
-                        {% endif %}
-                    </strong>
-                </div>
-
-                <div>
-                    <span>Academic Year</span>
-                    <strong>
-                        {% if class_section %}
-                            {{ class_section.academic_year }}
-                        {% else %}
-                            —
-                        {% endif %}
-                    </strong>
-                </div>
-
-                <div>
-                    <span>Total Subjects</span>
-                    <strong>{{ enrollments|length }}</strong>
-                </div>
+                <a
+                    class="primary-button"
+                    href="{{ url_for('student.timetable') }}"
+                >
+                    Weekly Timetable
+                </a>
             </div>
         </div>
 
@@ -106,19 +45,20 @@
                     <h2>Enrolled Subjects</h2>
 
                     <p>
-                        Subjects connected to your active enrolments.
+                        Only active subjects connected to your
+                        enrolled class section are shown.
                     </p>
                 </div>
             </div>
 
-            {% if enrollments %}
+            {% if subjects %}
                 <div class="table-responsive">
                     <table class="data-table">
                         <thead>
                             <tr>
                                 <th>Subject</th>
-                                <th>Subject Code</th>
-                                <th>Programme</th>
+                                <th>Teacher</th>
+                                <th>Program</th>
                                 <th>Section</th>
                                 <th>Semester</th>
                                 <th>Academic Year</th>
@@ -126,32 +66,36 @@
                         </thead>
 
                         <tbody>
-                            {% for enrollment in enrollments %}
+                            {% for row in subjects %}
                                 <tr>
                                     <td>
                                         <strong>
-                                            {{ enrollment.subject_name }}
+                                            {{ row.subject_name }}
                                         </strong>
+                                        <br>
+                                        <small>
+                                            {{ row.subject_code }}
+                                        </small>
                                     </td>
 
                                     <td>
-                                        {{ enrollment.subject_code }}
+                                        {{ row.teacher_display }}
                                     </td>
 
                                     <td>
-                                        {{ enrollment.class_name }}
+                                        {{ row.class_name }}
                                     </td>
 
                                     <td>
-                                        Section {{ enrollment.section }}
+                                        {{ row.section }}
                                     </td>
 
                                     <td>
-                                        Semester {{ enrollment.semester }}
+                                        {{ row.semester }}
                                     </td>
 
                                     <td>
-                                        {{ enrollment.academic_year }}
+                                        {{ row.academic_year }}
                                     </td>
                                 </tr>
                             {% endfor %}
@@ -160,28 +104,14 @@
                 </div>
             {% else %}
                 <div class="empty-state">
-                    <h3>No Subjects Found</h3>
+                    <h3>No Subjects Assigned</h3>
 
                     <p>
-                        No active subject enrolments are connected to
-                        this student account.
+                        No active subject enrolment is connected to
+                        your student profile.
                     </p>
                 </div>
             {% endif %}
-        </div>
-
-        <div class="demo-account-note">
-            <h2>Subject Access</h2>
-
-            <p>
-                Students can only view subjects connected to their own
-                student profile and active enrolments.
-            </p>
-
-            <p>
-                Subject and class assignments are managed by the
-                administrator and stored in the local SQLite database.
-            </p>
         </div>
 
     </div>

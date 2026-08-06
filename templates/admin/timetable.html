@@ -8,6 +8,7 @@
 <section class="dashboard-page">
     <div class="dashboard-container">
 
+        <!-- Page Heading -->
         <div class="page-heading-row">
             <div>
                 <span class="role-badge role-admin">
@@ -17,8 +18,8 @@
                 <h1>Timetable Management</h1>
 
                 <p>
-                    View class schedules connected to teachers,
-                    subjects and class sections.
+                    Manage schedules for class sections, students,
+                    teachers, subjects, rooms and weekly class times.
                 </p>
             </div>
 
@@ -30,56 +31,126 @@
                     Back to Dashboard
                 </a>
 
-               <a
-    class="primary-button"
-    href="{{ url_for('admin.add_timetable') }}"
->
-    Add Timetable Entry
-</a>
+                <a
+                    class="secondary-button"
+                    href="{{ url_for('admin.section_timetable') }}"
+                >
+                    Section Timetables
+                </a>
+
+                <a
+                    class="primary-button"
+                    href="{{ url_for('admin.add_timetable') }}"
+                >
+                    Add Timetable Entry
+                </a>
             </div>
         </div>
 
+        <!-- Timetable View Options -->
+        <div class="dashboard-card">
+            <div class="dashboard-card-heading">
+                <div>
+                    <h2>Timetable Views</h2>
+
+                    <p>
+                        Use the same timetable records to view schedules
+                        by section or teacher.
+                    </p>
+                </div>
+            </div>
+
+            <div class="dashboard-action-grid">
+                <a
+                    class="dashboard-action-card"
+                    href="{{ url_for('admin.section_timetable') }}"
+                >
+                    <div>
+                        <h3>Section Timetables</h3>
+
+                        <p>
+                            View a separate weekly timetable for every
+                            programme and section, including subject,
+                            teacher, room, date and class time.
+                        </p>
+                    </div>
+
+                    <span>Open Section Timetables</span>
+                </a>
+
+                <a class="dashboard-action-card" href="{{ url_for('admin.teacher_timetables') }}">
+                    <div>
+                        <h3>Teacher Timetables</h3>
+
+                        <p>
+                            View one combined timetable for each teacher
+                            containing all sections taught by that
+                            teacher during the week.
+                        </p>
+                    </div>
+
+                    <span>Open Teacher Timetables</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Summary Cards -->
         <div class="stats-grid">
             <article class="stat-card">
                 <span>Total Entries</span>
 
-                <strong>{{ summary.total }}</strong>
+                <strong>
+                    {{ summary.total }}
+                </strong>
 
                 <p>
-                    All timetable records
+                    All timetable records stored locally
                 </p>
             </article>
 
             <article class="stat-card">
                 <span>Active Entries</span>
 
-                <strong>{{ summary.active }}</strong>
+                <strong>
+                    {{ summary.active }}
+                </strong>
 
                 <p>
-                    Timetable entries currently enabled
+                    Entries currently shown in schedules
                 </p>
             </article>
 
             <article class="stat-card">
                 <span>Inactive Entries</span>
 
-                <strong>{{ summary.inactive }}</strong>
+                <strong>
+                    {{ summary.inactive }}
+                </strong>
 
                 <p>
-                    Timetable entries currently disabled
+                    Entries stored but currently disabled
                 </p>
             </article>
         </div>
 
+        <!-- Complete Timetable Records -->
         <div class="dashboard-card">
             <div class="dashboard-card-heading">
                 <div>
-                    <h2>Class Schedule</h2>
+                    <h2>All Timetable Entries</h2>
 
                     <p>
-                        Entries are arranged from Monday to Sunday.
+                        Complete timetable records arranged from Monday
+                        to Sunday and by class start time.
                     </p>
                 </div>
+
+                <a
+                    class="primary-button"
+                    href="{{ url_for('admin.add_timetable') }}"
+                >
+                    Add New Entry
+                </a>
             </div>
 
             {% if timetable_rows %}
@@ -101,10 +172,14 @@
                         <tbody>
                             {% for row in timetable_rows %}
                                 <tr>
+                                    <!-- Day -->
                                     <td>
-                                        <strong>{{ row.day }}</strong>
+                                        <strong>
+                                            {{ row.day }}
+                                        </strong>
                                     </td>
 
+                                    <!-- Time -->
                                     <td>
                                         <strong>
                                             {{ row.start_time }}
@@ -117,6 +192,7 @@
                                         </small>
                                     </td>
 
+                                    <!-- Subject -->
                                     <td>
                                         <strong>
                                             {{ row.subject_name }}
@@ -129,6 +205,7 @@
                                         </small>
                                     </td>
 
+                                    <!-- Teacher -->
                                     <td>
                                         <strong>
                                             {{ row.teacher_name }}
@@ -137,25 +214,31 @@
                                         <br>
 
                                         <small>
+                                            Employee ID:
                                             {{ row.employee_id }}
                                         </small>
                                     </td>
 
+                                    <!-- Class Section -->
                                     <td>
-                                        {{ row.class_name }}
+                                        <strong>
+                                            {{ row.class_name }}
+                                        </strong>
 
                                         <br>
 
                                         <small>
-                                            Section {{ row.section }},
-                                            Semester {{ row.semester }}
+                                            Section {{ row.section }}
+                                            · Semester {{ row.semester }}
                                         </small>
                                     </td>
 
+                                    <!-- Room -->
                                     <td>
                                         {{ row.room }}
                                     </td>
 
+                                    <!-- Status -->
                                     <td>
                                         {% if row.is_active %}
                                             <span
@@ -178,16 +261,19 @@
                                         {% endif %}
                                     </td>
 
+                                    <!-- Actions -->
                                     <td>
-                                        <a
-    class="table-action-link"
-    href="{{ url_for(
-        'admin.edit_timetable',
-        timetable_id=row.id
-    ) }}"
->
-    Edit
-</a>
+                                        <div class="table-action-group">
+                                            <a
+                                                class="table-action-link"
+                                                href="{{ url_for(
+                                                    'admin.edit_timetable',
+                                                    timetable_id=row.id
+                                                ) }}"
+                                            >
+                                                Edit
+                                            </a>
+                                        </div>
                                     </td>
                                 </tr>
                             {% endfor %}
@@ -200,24 +286,45 @@
 
                     <p>
                         No timetable records are currently available.
-                        The Add Timetable function will be enabled in
-                        the next step.
+                        Add the first schedule for a teacher, subject
+                        and class section.
                     </p>
+
+                    <a
+                        class="primary-button"
+                        href="{{ url_for('admin.add_timetable') }}"
+                    >
+                        Add First Timetable Entry
+                    </a>
                 </div>
             {% endif %}
         </div>
 
+        <!-- Timetable Rules -->
         <div class="demo-account-note">
-            <h2>Current Timetable Status</h2>
+            <h2>Timetable Rules</h2>
 
             <p>
-                This page reads timetable entries directly from the
-                local SQLite database.
+                Each class section has its own weekly timetable.
+                Students assigned to that section see the same subject,
+                teacher, room, day and class-time information.
             </p>
 
             <p>
-                Adding, editing and validating timetable conflicts
-                will be implemented in the next steps.
+                A teacher can teach several different sections during
+                the same day. All those entries will appear together
+                in that teacher's combined timetable.
+            </p>
+
+            <p>
+                The conflict checker prevents one teacher, one section
+                or one room from being assigned to overlapping classes.
+            </p>
+
+            <p>
+                Timetable data is stored once in SQLite and reused by
+                the Admin, Teacher and Student panels without creating
+                duplicate schedule records.
             </p>
         </div>
 

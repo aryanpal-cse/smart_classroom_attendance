@@ -16,16 +16,30 @@
 
     <link
         rel="stylesheet"
-        href="{{ url_for('static', filename='css/style.css') }}"
+        href="{{ url_for('static', filename='css/style.css', v='20260801-layout2') }}"
     >
+
+    {% block head %}{% endblock %}
 </head>
 
 <body>
     <header class="main-header">
         <div class="header-container">
-            <a class="brand" href="{{ url_for('home') }}">
-                Smart Classroom
-            </a>
+            <div class="header-brand-area">
+                {% if show_global_back %}
+                    <a
+                        class="header-back-link"
+                        href="{{ global_back_url }}"
+                        aria-label="Go back"
+                    >
+                        ← Back
+                    </a>
+                {% endif %}
+
+                <a class="brand" href="{{ url_for('home') }}">
+                    Smart Classroom
+                </a>
+            </div>
 
             <nav class="main-navigation">
                 {% if current_user.is_authenticated %}
@@ -34,6 +48,13 @@
                         ·
                         {{ current_user.role|title }}
                     </span>
+
+                    <a
+                        class="header-dashboard-link"
+                        href="{{ role_dashboard_url }}"
+                    >
+                        Dashboard
+                    </a>
 
                     <form
                         method="POST"
@@ -87,5 +108,7 @@
             Academic mini-project prototype · Local Flask application
         </p>
     </footer>
+
+    {% block scripts %}{% endblock %}
 </body>
 </html>

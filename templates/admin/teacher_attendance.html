@@ -1,0 +1,207 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Teacher Attendance · Smart Classroom
+{% endblock %}
+
+{% block content %}
+<section class="dashboard-page">
+    <div class="dashboard-container">
+        <div class="page-heading-row">
+            <div>
+                <span class="role-badge role-teacher">
+                    Teacher Management
+                </span>
+
+                <h1>Teacher Attendance</h1>
+
+                <p>
+                    Manage present, absent, late, half-day, leave,
+                    check-in, check-out and classes conducted.
+                </p>
+            </div>
+
+            <div class="page-heading-actions">
+                <a
+                    class="secondary-button"
+                    href="{{ url_for('admin.teacher_management_home') }}"
+                >
+                    Teacher Management
+                </a>
+
+                <a
+                    class="primary-button"
+                    href="{{ url_for('admin.add_teacher_attendance') }}"
+                >
+                    Add Attendance
+                </a>
+            </div>
+        </div>
+
+        <div class="management-form-card">
+            <form method="GET" class="management-form">
+                <div class="form-group">
+                    <label class="form-label" for="teacher_id">
+                        Filter Teacher
+                    </label>
+
+                    <select
+                        class="form-control"
+                        name="teacher_id"
+                        id="teacher_id"
+                    >
+                        <option value="">All Teachers</option>
+
+                        {% for teacher in teachers %}
+                            <option
+                                value="{{ teacher.id }}"
+                                {% if teacher.id == selected_teacher_id %}
+                                    selected
+                                {% endif %}
+                            >
+                                {{ teacher.full_name }}
+                                · {{ teacher.employee_id }}
+                                · {{ teacher.designation }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-actions">
+                    <button class="primary-button" type="submit">
+                        Apply Filter
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div class="stats-grid">
+            <article class="stat-card">
+                <span>Attendance</span>
+                <strong>{{ summary.percentage }}%</strong>
+                <p>Present, late and half-day equivalent</p>
+            </article>
+
+            <article class="stat-card">
+                <span>Present / Late</span>
+                <strong>
+                    {{ summary.present }} / {{ summary.late }}
+                </strong>
+                <p>Recorded working days</p>
+            </article>
+
+            <article class="stat-card">
+                <span>Absent / Leave</span>
+                <strong>
+                    {{ summary.absent }} / {{ summary.leave }}
+                </strong>
+                <p>Attendance exceptions</p>
+            </article>
+
+            <article class="stat-card">
+                <span>Classes Conducted</span>
+                <strong>{{ summary.conducted_classes }}</strong>
+                <p>Out of {{ summary.scheduled_classes }} scheduled</p>
+            </article>
+        </div>
+
+        <div class="dashboard-card section-gap">
+            {% if records %}
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Teacher</th>
+                                <th>Status</th>
+                                <th>Check-in</th>
+                                <th>Check-out</th>
+                                <th>Scheduled</th>
+                                <th>Conducted</th>
+                                <th>Remarks / Reason</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for record in records %}
+                                <tr>
+                                    <td>
+                                        {{
+                                            record.attendance_date
+                                            .strftime('%d %b %Y')
+                                        }}
+                                    </td>
+
+                                    <td>
+                                        <strong>
+                                            {{ record.teacher.full_name }}
+                                        </strong>
+
+                                        <br>
+
+                                        <small>
+                                            {{ record.teacher.employee_id }}
+                                            · {{ record.teacher.designation }}
+                                        </small>
+                                    </td>
+
+                                    <td>
+                                        {{
+                                            record.status
+                                            .replace('_', ' ')
+                                            |title
+                                        }}
+                                    </td>
+
+                                    <td>
+                                        {{
+                                            record.check_in
+                                            .strftime('%I:%M %p')
+                                            if record.check_in
+                                            else '—'
+                                        }}
+                                    </td>
+
+                                    <td>
+                                        {{
+                                            record.check_out
+                                            .strftime('%I:%M %p')
+                                            if record.check_out
+                                            else '—'
+                                        }}
+                                    </td>
+
+                                    <td>{{ record.scheduled_classes }}</td>
+                                    <td>{{ record.conducted_classes }}</td>
+                                    <td>{{ record.remarks or '—' }}</td>
+
+                                    <td>
+                                        <a
+                                            class="table-action-link"
+                                            href="{{ url_for(
+                                                'admin.edit_teacher_attendance',
+                                                record_id=record.id
+                                            ) }}"
+                                        >
+                                            Edit
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <h3>No Teacher Attendance</h3>
+
+                    <p>
+                        Add the first daily teacher attendance record.
+                    </p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -32,4 +32,16 @@ htmlcov/
 
 # Operating-system files
 .DS_Store
-Thumbs.db
+Thumbs.dbinstance/
+face_data/
+reports/
+*.pyc
+*.pyo
+*.pyd
+*.zip
+templates_backup_*/
+routes_backup_*/
+source_backup_*/
+smart_classroom_current_source/
+session_debug.txt
+verify_seed_output.txt

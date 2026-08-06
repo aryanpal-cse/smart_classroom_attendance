@@ -59,8 +59,8 @@
                                 <th>Roll Number</th>
                                 <th>Student Name</th>
                                 <th>Username</th>
-                                <th>Email</th>
-                                <th>Class</th>
+                                <th>Email / Phone</th>
+                                <th>Course / Class</th>
                                 <th>Face Status</th>
                                 <th>Account Status</th>
                                 <th>Actions</th>
@@ -91,21 +91,34 @@
                                         {% endif %}
                                     </td>
 
-                                    <!-- Email -->
+                                    <!-- Email and Phone -->
                                     <td>
-                                        {% if student.email %}
-                                            {{ student.email }}
-                                        {% else %}
-                                            Not provided
-                                        {% endif %}
+                                        {{ student.email or 'Not provided' }}
+
+                                        <br>
+
+                                        <small>
+                                            {{ student.phone or 'No phone' }}
+                                        </small>
                                     </td>
 
-                                    <!-- Class Section -->
+                                    <!-- Course and Class Section -->
                                     <td>
                                         {% if student.class_section %}
-                                            {{ student.class_section.name }}
-                                            Section
-                                            {{ student.class_section.section }}
+                                            <strong>
+                                                {{ student.class_section.course }}
+                                            </strong>
+
+                                            <br>
+
+                                            <small>
+                                                {{ student.class_section.name }}
+                                                · Semester
+                                                {{ student.class_section.semester }}
+                                                · {{ student.class_section.group_name }}
+                                                · Section
+                                                {{ student.class_section.section }}
+                                            </small>
                                         {% else %}
                                             Not assigned
                                         {% endif %}
@@ -214,8 +227,9 @@
             </p>
 
             <p>
-                Face registration will be implemented separately
-                during the face-enrolment phase.
+                Students register face samples from their own protected
+                Student Panel. Admin can monitor registration status,
+                attendance analytics and audit-log corrections.
             </p>
         </div>
 

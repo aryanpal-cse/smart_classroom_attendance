@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+
+{% block title %}
+    My Profile · Student Panel
+{% endblock %}
+
+{% block content %}
+<section class="dashboard-page">
+    <div class="dashboard-container">
+        <div class="page-heading-row">
+            <div>
+                <span class="role-badge role-student">
+                    My Profile
+                </span>
+
+                <h1>{{ student.full_name }}</h1>
+
+                <p>
+                    This profile belongs only to the currently
+                    logged-in student account.
+                </p>
+            </div>
+
+            <div class="page-heading-actions">
+                <a
+                    class="secondary-button"
+                    href="{{ url_for('student.dashboard') }}"
+                >
+                    Student Dashboard
+                </a>
+
+                <a
+                    class="primary-button"
+                    href="{{ url_for('student.register_face') }}"
+                >
+                    {{
+                        'Update Face Samples'
+                        if student.face_registered
+                        else 'Register My Face'
+                    }}
+                </a>
+            </div>
+        </div>
+
+        <div class="profile-information-grid">
+            <div>
+                <span>Full Name</span>
+                <strong>{{ student.full_name }}</strong>
+            </div>
+
+            <div>
+                <span>Roll Number</span>
+                <strong>{{ student.roll_number }}</strong>
+            </div>
+
+            <div>
+                <span>Email</span>
+                <strong>{{ student.email or 'Not provided' }}</strong>
+            </div>
+
+            <div>
+                <span>Phone</span>
+                <strong>{{ student.phone or 'Not provided' }}</strong>
+            </div>
+
+            <div>
+                <span>Course</span>
+                <strong>
+                    {{
+                        class_section.course
+                        if class_section
+                        else 'Not assigned'
+                    }}
+                </strong>
+            </div>
+
+            <div>
+                <span>Branch</span>
+                <strong>
+                    {{
+                        class_section.name
+                        if class_section
+                        else 'Not assigned'
+                    }}
+                </strong>
+            </div>
+
+            <div>
+                <span>Academic Year</span>
+                <strong>
+                    {{
+                        class_section.academic_year
+                        if class_section
+                        else '—'
+                    }}
+                </strong>
+            </div>
+
+            <div>
+                <span>Semester</span>
+                <strong>
+                    {{
+                        class_section.semester
+                        if class_section
+                        else '—'
+                    }}
+                </strong>
+            </div>
+
+            <div>
+                <span>Group</span>
+                <strong>
+                    {{
+                        class_section.group_name
+                        if class_section
+                        else '—'
+                    }}
+                </strong>
+            </div>
+
+            <div>
+                <span>Section</span>
+                <strong>
+                    {{
+                        class_section.section
+                        if class_section
+                        else '—'
+                    }}
+                </strong>
+            </div>
+
+            <div>
+                <span>Face Registration</span>
+                <strong>
+                    {{
+                        'Completed'
+                        if student.face_registered
+                        else 'Pending'
+                    }}
+                </strong>
+            </div>
+
+            <div>
+                <span>Attendance</span>
+                <strong>{{ attendance.percentage }}%</strong>
+            </div>
+        </div>
+
+        {% if attendance.percentage < config.ATTENDANCE_THRESHOLD %}
+            <div class="feature-alert feature-alert-warning section-gap">
+                <strong>Low-attendance warning.</strong>
+                Your current attendance is below
+                {{ config.ATTENDANCE_THRESHOLD }}%.
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

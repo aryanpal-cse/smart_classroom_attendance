@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Correct Attendance · Smart Classroom{% endblock %}
+{% block content %}
+<section class="dashboard-page"><div class="dashboard-container">
+    <div class="page-heading-row"><div><span class="role-badge role-admin">Audited Correction</span><h1>Correct Attendance</h1><p>{{ row.student_name }} · {{ row.subject_name }} · {{ row.date }}</p></div></div>
+    <div class="profile-information-grid"><div><span>Roll Number</span><strong>{{ row.roll_number }}</strong></div><div><span>Current Status</span><strong>{{ row.status }}</strong></div><div><span>Original Method</span><strong>{{ row.method }}</strong></div><div><span>Teacher</span><strong>{{ row.teacher_name }}</strong></div><div><span>Class</span><strong>{{ row.class_name }} · {{ row.section }}</strong></div><div><span>Existing Notes</span><strong>{{ row.notes }}</strong></div></div>
+    <div class="management-form-card section-gap"><form method="POST" class="management-form">{{ form.hidden_tag() }}<div class="form-group">{{ form.status.label(class="form-label") }}{{ form.status(class="form-control") }}{% for error in form.status.errors %}<small class="form-error">{{ error }}</small>{% endfor %}</div><div class="form-group">{{ form.correction_reason.label(class="form-label") }}{{ form.correction_reason(class="form-control", rows="4", placeholder="Explain why this attendance record is being changed") }}{% for error in form.correction_reason.errors %}<small class="form-error">{{ error }}</small>{% endfor %}</div><div class="form-actions">{{ form.submit(class="primary-button") }}</div></form></div>
+    <div class="feature-alert feature-alert-warning">The old status, new status, administrator, reason and time are stored in the audit log.</div>
+</div></section>
+{% endblock %}

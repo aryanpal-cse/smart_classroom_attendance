@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block title %}Class Session History · Smart Classroom{% endblock %}
+{% block content %}
+<section class="dashboard-page"><div class="dashboard-container">
+    <div class="page-heading-row"><div><span class="role-badge role-teacher">Teacher Records</span><h1>Class Session History</h1><p>Sessions belonging only to {{ teacher.full_name }}.</p></div><a class="primary-button" href="{{ url_for('teacher.session_list') }}">Start Live Class</a></div>
+    <div class="dashboard-card"><div class="dashboard-card-heading"><div><h2>Scheduled and Conducted Sessions</h2><p>Attendance totals and pending reviews.</p></div></div>{% if rows %}<div class="table-responsive"><table class="data-table"><thead><tr><th>Date</th><th>Subject</th><th>Section</th><th>Code</th><th>Status</th><th>Attendance</th><th>Pending Reviews</th><th>Action</th></tr></thead><tbody>{% for row in rows %}<tr><td>{{ row.session.session_date.strftime('%d %b %Y') }}</td><td>{{ row.assignment.subject.name }}<br><small>{{ row.assignment.subject.code }}</small></td><td>{{ row.assignment.class_section.name }} · {{ row.assignment.class_section.section }}</td><td>{{ row.session.class_code or '—' }}</td><td><span class="table-status status-{{ 'active' if row.active else 'inactive' }}">{{ row.display_status|replace('_', ' ')|title }}</span></td><td>{{ row.attendance_count }}</td><td>{{ row.pending_reviews }}</td><td><a class="table-action-link" href="{{ url_for('teacher.session_detail', session_id=row.session.id) }}">View</a></td></tr>{% endfor %}</tbody></table></div>{% else %}<div class="empty-state"><h3>No Class Sessions</h3><p>Start the first class session from Live Class Sessions.</p></div>{% endif %}</div>
+</div></section>
+{% endblock %}

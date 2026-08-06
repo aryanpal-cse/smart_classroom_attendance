@@ -11,6 +11,12 @@ class ClassSection(db.Model):
         primary_key=True,
     )
 
+    course = db.Column(
+        db.String(100),
+        nullable=False,
+        default="B.Tech",
+    )
+
     name = db.Column(
         db.String(100),
         nullable=False,
@@ -30,6 +36,12 @@ class ClassSection(db.Model):
     academic_year = db.Column(
         db.String(20),
         nullable=False,
+    )
+
+    group_name = db.Column(
+        db.String(50),
+        nullable=False,
+        default="General",
     )
 
     is_active = db.Column(

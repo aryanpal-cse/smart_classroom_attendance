@@ -1,0 +1,250 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Live Attendance · {{ assignment.subject.name }}
+{% endblock %}
+
+{% block content %}
+<section class="dashboard-page">
+    <div class="dashboard-container">
+        <div class="page-heading-row">
+            <div>
+                <span class="role-badge role-teacher">
+                    Session {{ class_session.id }}
+                </span>
+
+                <h1>{{ assignment.subject.name }}</h1>
+
+                <p>
+                    {{ assignment.class_section.course }}
+                    · {{ assignment.class_section.name }}
+                    · Section {{ assignment.class_section.section }}
+                    · {{ class_session.session_date.strftime('%d %b %Y') }}
+                </p>
+            </div>
+
+            <div class="page-heading-actions">
+                <a
+                    class="secondary-button"
+                    href="{{ url_for('teacher.session_list') }}"
+                >
+                    Live Sessions
+                </a>
+
+                {% if
+                    class_session.attendance_closed_at is none
+                    and class_session.status
+                        not in ['CLOSED', 'ENDED', 'FINALIZED']
+                %}
+                    <form
+                        method="POST"
+                        action="{{ url_for(
+                            'teacher.end_session',
+                            session_id=class_session.id
+                        ) }}"
+                        class="inline-form"
+                        onsubmit="return confirm(
+                            'End attendance for this class session?'
+                        );"
+                    >
+                        {{ end_form.hidden_tag() }}
+                        {{ end_form.submit(class="primary-button") }}
+                    </form>
+                {% elif class_session.status != 'FINALIZED' %}
+                    <form
+                        method="POST"
+                        action="{{ url_for(
+                            'teacher.finalize_session',
+                            session_id=class_session.id
+                        ) }}"
+                        class="inline-form"
+                        onsubmit="return confirm(
+                            'Finalize this session? Pending manual reviews must be decided first.'
+                        );"
+                    >
+                        {{ finalize_form.hidden_tag() }}
+                        {{ finalize_form.submit(class="primary-button") }}
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <article class="stat-card">
+                <span>Total Students</span>
+                <strong>{{ summary.total }}</strong>
+                <p>Enrolled in this subject</p>
+            </article>
+
+            <article class="stat-card">
+                <span>Present</span>
+                <strong>{{ summary.present }}</strong>
+                <p>Face verified or manually approved</p>
+            </article>
+
+            <article class="stat-card">
+                <span>Not Recorded</span>
+                <strong>{{ summary.pending }}</strong>
+                <p>No final attendance record yet</p>
+            </article>
+
+            <article class="stat-card">
+                <span>Manual Review</span>
+                <strong>{{ summary.manual_review }}</strong>
+                <p>Teacher decision required</p>
+            </article>
+        </div>
+
+        <div class="feature-alert">
+            <strong>Temporary code:</strong>
+            <span class="session-code">
+                {{ class_session.class_code or 'Expired' }}
+            </span>
+
+            · Status: {{ display_status|replace('_', ' ')|title }}
+
+            {% if class_session.finalized_at %}
+                · Finalized:
+                {{ class_session.finalized_at.strftime('%d %b %Y %I:%M %p') }}
+            {% endif %}
+        </div>
+
+        {% if not active and class_session.status != 'FINALIZED' %}
+            <div class="feature-alert feature-alert-warning">
+                Attendance entry is closed. Resolve every pending manual
+                review and then finalize the session.
+            </div>
+        {% endif %}
+
+        <div class="dashboard-card section-gap">
+            <div class="dashboard-card-heading">
+                <div>
+                    <h2>Student Attendance Roster</h2>
+
+                    <p>
+                        Attendance is recorded only through face
+                        verification or an approved manual-review request.
+                    </p>
+                </div>
+            </div>
+
+            {% if roster_rows %}
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Roll Number</th>
+                                <th>Student</th>
+                                <th>Status</th>
+                                <th>Method</th>
+                                <th>Review Information</th>
+                                <th>Decision</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for row in roster_rows %}
+                                <tr>
+                                    <td>{{ row.student.roll_number }}</td>
+
+                                    <td>
+                                        <strong>{{ row.student.full_name }}</strong>
+                                    </td>
+
+                                    <td>
+                                        <span
+                                            class="table-status status-{{ row.status_key }}"
+                                        >
+                                            {{ row.status }}
+                                        </span>
+                                    </td>
+
+                                    <td>{{ row.method }}</td>
+
+                                    <td class="table-note">
+                                        {% if row.review %}
+                                            <strong>
+                                                {{ row.review.failure_reason }}
+                                            </strong>
+
+                                            <br>
+
+                                            <small>
+                                                {{
+                                                    row.review.student_note
+                                                    or 'No student note'
+                                                }}
+                                            </small>
+                                        {% else %}
+                                            —
+                                        {% endif %}
+                                    </td>
+
+                                    <td>
+                                        {% if
+                                            row.review
+                                            and row.review.status == 'PENDING'
+                                        %}
+                                            <form
+                                                method="POST"
+                                                action="{{ url_for(
+                                                    'teacher.manual_review_decision',
+                                                    review_id=row.review.id
+                                                ) }}"
+                                                class="decision-form"
+                                            >
+                                                {{ decision_form.csrf_token }}
+
+                                                <input
+                                                    class="form-control"
+                                                    type="text"
+                                                    name="teacher_note"
+                                                    maxlength="255"
+                                                    placeholder="Optional decision note"
+                                                >
+
+                                                <div class="table-action-group">
+                                                    <button
+                                                        class="secondary-button"
+                                                        type="submit"
+                                                        name="decision"
+                                                        value="REJECT"
+                                                    >
+                                                        Reject
+                                                    </button>
+
+                                                    <button
+                                                        class="primary-button"
+                                                        type="submit"
+                                                        name="decision"
+                                                        value="APPROVE"
+                                                    >
+                                                        Approve
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        {% elif row.review %}
+                                            {{ row.review.status|title }}
+                                        {% else %}
+                                            —
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <h3>No Enrolled Students</h3>
+
+                    <p>
+                        No active subject enrollments were found for
+                        this class section.
+                    </p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

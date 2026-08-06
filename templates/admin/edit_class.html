@@ -55,6 +55,12 @@
 
                     <div class="form-grid">
                         <div class="form-group">
+                            {{ form.course.label(class="form-label") }}
+                            {{ form.course(class="form-control", placeholder="Example: B.Tech") }}
+                            {% for error in form.course.errors %}<p class="form-error">{{ error }}</p>{% endfor %}
+                        </div>
+
+                        <div class="form-group">
                             {{ form.name.label(class="form-label") }}
 
                             {{ form.name(
@@ -115,6 +121,12 @@
                                     {{ error }}
                                 </p>
                             {% endfor %}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form.group_name.label(class="form-label") }}
+                            {{ form.group_name(class="form-control", placeholder="Example: Group B") }}
+                            {% for error in form.group_name.errors %}<p class="form-error">{{ error }}</p>{% endfor %}
                         </div>
                     </div>
                 </div>

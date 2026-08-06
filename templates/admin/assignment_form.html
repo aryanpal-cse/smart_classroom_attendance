@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block title %}{{ page_title }} · Smart Classroom{% endblock %}
+{% block content %}
+<section class="dashboard-page"><div class="dashboard-container">
+    <div class="page-heading-row"><div><span class="role-badge role-admin">Teaching Assignment</span><h1>{{ page_title }}</h1><p>Select the teacher, subject and section. Student subject enrolments are synchronized automatically.</p></div></div>
+    <div class="management-form-card"><form method="POST" class="management-form">{{ form.hidden_tag() }}<div class="form-grid"><div class="form-group">{{ form.teacher_id.label(class="form-label") }}{{ form.teacher_id(class="form-control") }}{% for error in form.teacher_id.errors %}<p class="form-error">{{ error }}</p>{% endfor %}</div><div class="form-group">{{ form.subject_id.label(class="form-label") }}{{ form.subject_id(class="form-control") }}{% for error in form.subject_id.errors %}<p class="form-error">{{ error }}</p>{% endfor %}</div><div class="form-group">{{ form.class_id.label(class="form-label") }}{{ form.class_id(class="form-control") }}{% for error in form.class_id.errors %}<p class="form-error">{{ error }}</p>{% endfor %}</div></div><div class="account-option-card"><label class="checkbox-label">{{ form.is_active() }}<span>{{ form.is_active.label.text }}</span></label></div><div class="form-actions"><a class="secondary-button" href="{{ url_for('admin.assignment_list') }}">Cancel</a>{{ form.submit(class="primary-button") }}</div></form></div>
+</div></section>
+{% endblock %}

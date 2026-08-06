@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Manual Review Request · Smart Classroom{% endblock %}
+{% block content %}
+<section class="dashboard-page"><div class="dashboard-container">
+    <div class="page-heading-row"><div><span class="role-badge role-student">Fallback Attendance</span><h1>Request Manual Review</h1><p>{{ assignment.subject.name }} · {{ assignment.class_section.name }} Section {{ assignment.class_section.section }}</p></div></div>
+    <div class="feature-alert feature-alert-warning"><strong>Face verification result:</strong> {{ failure_reason }}</div>
+    {% if existing_review %}<div class="feature-alert"><strong>Existing request:</strong> {{ existing_review.status|title }}. Submitting again refreshes it only while attendance is still valid.</div>{% endif %}
+    <div class="management-form-card"><form method="POST" class="management-form">{{ form.hidden_tag() }}<div class="form-group">{{ form.student_note.label(class="form-label") }}{{ form.student_note(class="form-control", rows="4", placeholder="Example: camera could not detect my face due to poor lighting") }}{% for error in form.student_note.errors %}<small class="form-error">{{ error }}</small>{% endfor %}</div><div class="form-actions">{{ form.submit(class="primary-button") }}</div></form></div>
+    <div class="feature-alert">This does not mark you present. The assigned teacher must approve the request and the action is stored in the audit log.</div>
+</div></section>
+{% endblock %}

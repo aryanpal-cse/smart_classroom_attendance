@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Teacher Timetables · Smart Classroom
+{% endblock %}
+
+{% block content %}
+<section class="dashboard-page">
+    <div class="dashboard-container">
+        <div class="page-heading-row">
+            <div>
+                <span class="role-badge role-teacher">
+                    Teacher Management
+                </span>
+
+                <h1>Teacher Timetables</h1>
+
+                <p>
+                    Select a teacher to view every assigned class
+                    across courses and sections.
+                </p>
+            </div>
+
+            <a
+                class="secondary-button"
+                href="{{ url_for('admin.teacher_management_home') }}"
+            >
+                Teacher Management
+            </a>
+        </div>
+
+        <div class="management-form-card">
+            <form method="GET" class="management-form">
+                <div class="form-group">
+                    <label class="form-label" for="teacher_id">
+                        Teacher
+                    </label>
+
+                    <select
+                        class="form-control"
+                        id="teacher_id"
+                        name="teacher_id"
+                    >
+                        {% for teacher in teachers %}
+                            <option
+                                value="{{ teacher.id }}"
+                                {% if teacher.id == selected_teacher_id %}
+                                    selected
+                                {% endif %}
+                            >
+                                {{ teacher.full_name }}
+                                · {{ teacher.employee_id }}
+                                · {{ teacher.designation }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-actions">
+                    <button class="primary-button" type="submit">
+                        View Timetable
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div class="dashboard-card section-gap">
+            <div class="dashboard-card-heading">
+                <div>
+                    <h2>
+                        {{
+                            selected_teacher.full_name
+                            if selected_teacher
+                            else 'No Teacher Selected'
+                        }}
+                    </h2>
+
+                    <p>
+                        Combined timetable for the current calendar week.
+                    </p>
+                </div>
+
+                {% if selected_teacher %}
+                    <a
+                        class="secondary-button"
+                        href="{{ url_for(
+                            'admin.teacher_detail',
+                            teacher_id=selected_teacher.id
+                        ) }}"
+                    >
+                        Teacher Record
+                    </a>
+                {% endif %}
+            </div>
+
+            {% if timetable_rows %}
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Day</th>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Subject</th>
+                                <th>Course / Section</th>
+                                <th>Room</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for row in timetable_rows %}
+                                <tr>
+                                    <td>{{ row.day }}</td>
+
+                                    <td>
+                                        {{
+                                            week_dates[row.day]
+                                            .strftime('%d %b %Y')
+                                        }}
+                                    </td>
+
+                                    <td>
+                                        {{ row.start_time }}
+                                        – {{ row.end_time }}
+                                    </td>
+
+                                    <td>
+                                        {{ row.subject_name }}
+
+                                        <br>
+
+                                        <small>{{ row.subject_code }}</small>
+                                    </td>
+
+                                    <td>
+                                        {{ row.class_name }}
+                                        · Section {{ row.section }}
+                                    </td>
+
+                                    <td>{{ row.room }}</td>
+
+                                    <td>
+                                        <a
+                                            class="table-action-link"
+                                            href="{{ url_for(
+                                                'admin.edit_timetable',
+                                                timetable_id=row.id
+                                            ) }}"
+                                        >
+                                            Edit
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <h3>No Timetable Entries</h3>
+
+                    <p>
+                        No active classes are scheduled for this teacher.
+                    </p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

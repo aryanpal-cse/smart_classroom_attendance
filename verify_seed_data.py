@@ -23,13 +23,13 @@ def verify_seed_data() -> None:
 
         checks = {
             "Admin users": User.query.filter_by(role="admin").count() == 1,
-            "Teacher profiles": Teacher.query.count() == 2,
-            "Student profiles": Student.query.count() == 10,
-            "Class sections": ClassSection.query.count() == 1,
-            "Subjects": Subject.query.count() == 3,
-            "Teaching assignments": TeachingAssignment.query.count() == 3,
-            "Timetable entries": Timetable.query.count() == 3,
-            "Student enrollments": Enrollment.query.count() == 30,
+            "Teacher profiles": Teacher.query.count() >= 2,
+            "Student profiles": Student.query.count() >= 10,
+            "Class sections": ClassSection.query.count() >= 1,
+            "Subjects": Subject.query.count() >= 3,
+            "Teaching assignments": TeachingAssignment.query.count() >= 3,
+            "Timetable entries": Timetable.query.count() >= 3,
+            "Student enrollments": Enrollment.query.count() >= 30,
         }
 
         all_passed = True

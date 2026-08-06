@@ -1,0 +1,36 @@
+SMART CLASSROOM ATTENDANCE — FINAL VALIDATION REPORT
+=====================================================
+
+Validation date: 31 July 2026
+
+PASSED
+------
+- Python source compilation
+- 41 automated Flask unittest cases
+- Admin, Teacher and Student login flows
+- Role-based access protection
+- Admin two-option dashboard
+- Teacher management routes
+- Course → Branch → Academic Year → Group → Section navigation
+- Teacher and Student personal dashboards
+- Weekly timetable routes
+- Student attendance and Admin analytics routes
+- CSV export route
+- Global Back button presence
+- Template file reference check
+- url_for endpoint reference check
+- SQLite PRAGMA integrity_check: ok
+- SQLite foreign_key_check: no issues
+- Database structure verification
+- Expanded demo seed-data verification
+
+REQUIRES LOCAL WINDOWS TEST
+---------------------------
+- Browser webcam permission
+- OpenCV face detection
+- LBPH model training
+- Live face verification under real lighting
+- Full teacher → student → manual-review workflow using a real camera
+
+The package does not claim enterprise-grade biometric accuracy. The LBPH
+score is shown only as an academic prototype comparison score.

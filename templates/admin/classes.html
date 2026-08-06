@@ -56,10 +56,12 @@
                     <table class="data-table">
                         <thead>
                             <tr>
-                                <th>Programme</th>
+                                <th>Course</th>
+                                <th>Branch / Programme</th>
                                 <th>Section</th>
                                 <th>Semester</th>
                                 <th>Academic Year</th>
+                                <th>Group / Batch</th>
                                 <th>Students</th>
                                 <th>Teaching Assignments</th>
                                 <th>Enrolments</th>
@@ -71,6 +73,8 @@
                         <tbody>
                             {% for class_section in class_sections %}
                                 <tr>
+                                    <td><strong>{{ class_section.course }}</strong></td>
+
                                     <!-- Programme -->
                                     <td>
                                         <strong>
@@ -94,6 +98,8 @@
                                     <td>
                                         {{ class_section.academic_year }}
                                     </td>
+
+                                    <td>{{ class_section.group_name }}</td>
 
                                     <!-- Student Count -->
                                     <td>

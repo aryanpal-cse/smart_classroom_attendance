@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import (
     BooleanField,
+    DateField,
     IntegerField,
     PasswordField,
     SelectField,
@@ -90,6 +91,15 @@ class AddStudentForm(FlaskForm):
         ],
     )
 
+
+    phone = StringField(
+        "Phone",
+        validators=[
+            Optional(),
+            Length(max=20, message="Phone cannot exceed 20 characters."),
+        ],
+    )
+
     class_id = SelectField(
         "Class Section",
         coerce=int,
@@ -158,6 +168,15 @@ class EditStudentForm(FlaskForm):
         ],
     )
 
+
+    phone = StringField(
+        "Phone",
+        validators=[
+            Optional(),
+            Length(max=20, message="Phone cannot exceed 20 characters."),
+        ],
+    )
+
     class_id = SelectField(
         "Class Section",
         coerce=int,
@@ -167,6 +186,8 @@ class EditStudentForm(FlaskForm):
             ),
         ],
     )
+
+
 
     new_password = PasswordField(
         "New Password",
@@ -283,6 +304,33 @@ class AddTeacherForm(FlaskForm):
         default="Computer Science and Engineering",
     )
 
+
+    designation = SelectField(
+        "Designation / Post",
+        choices=[
+            ("Assistant Professor", "Assistant Professor"),
+            ("Associate Professor", "Associate Professor"),
+            ("Professor", "Professor"),
+            ("Lab Instructor", "Lab Instructor"),
+            ("Head of Department", "Head of Department"),
+        ],
+        validators=[DataRequired(message="Designation is required.")],
+    )
+
+    phone = StringField(
+        "Phone",
+        validators=[
+            Optional(),
+            Length(max=20, message="Phone cannot exceed 20 characters."),
+        ],
+    )
+
+    joining_date = DateField(
+        "Joining Date",
+        validators=[Optional()],
+        format="%Y-%m-%d",
+    )
+
     is_active = BooleanField(
         "Activate account",
         default=True,
@@ -351,6 +399,32 @@ class EditTeacherForm(FlaskForm):
                 message="Department must contain 2 to 100 characters.",
             ),
         ],
+    )
+
+    designation = SelectField(
+        "Designation / Post",
+        choices=[
+            ("Assistant Professor", "Assistant Professor"),
+            ("Associate Professor", "Associate Professor"),
+            ("Professor", "Professor"),
+            ("Lab Instructor", "Lab Instructor"),
+            ("Head of Department", "Head of Department"),
+        ],
+        validators=[DataRequired(message="Designation is required.")],
+    )
+
+    phone = StringField(
+        "Phone",
+        validators=[
+            Optional(),
+            Length(max=20, message="Phone cannot exceed 20 characters."),
+        ],
+    )
+
+    joining_date = DateField(
+        "Joining Date",
+        validators=[Optional()],
+        format="%Y-%m-%d",
     )
 
     new_password = PasswordField(
@@ -479,6 +553,15 @@ class EditSubjectForm(FlaskForm):
 class AddClassSectionForm(FlaskForm):
     """Create a new academic class section."""
 
+    course = StringField(
+        "Course",
+        validators=[
+            DataRequired(message="Course is required."),
+            Length(min=2, max=100),
+        ],
+        default="B.Tech",
+    )
+
     name = StringField(
         "Programme / Class Name",
         validators=[
@@ -534,6 +617,15 @@ class AddClassSectionForm(FlaskForm):
         default="2026-27",
     )
 
+    group_name = StringField(
+        "Group / Batch",
+        validators=[
+            DataRequired(message="Group or batch is required."),
+            Length(min=1, max=50),
+        ],
+        default="General",
+    )
+
     is_active = BooleanField(
         "Activate class section",
         default=True,
@@ -544,6 +636,15 @@ class AddClassSectionForm(FlaskForm):
 
 class EditClassSectionForm(FlaskForm):
     """Update an existing academic class section."""
+
+    course = StringField(
+        "Course",
+        validators=[
+            DataRequired(message="Course is required."),
+            Length(min=2, max=100),
+        ],
+        default="B.Tech",
+    )
 
     name = StringField(
         "Programme / Class Name",
@@ -598,8 +699,45 @@ class EditClassSectionForm(FlaskForm):
         ],
     )
 
+    group_name = StringField(
+        "Group / Batch",
+        validators=[
+            DataRequired(message="Group or batch is required."),
+            Length(min=1, max=50),
+        ],
+        default="General",
+    )
+
     is_active = BooleanField(
         "Activate class section",
     )
 
     submit = SubmitField("Save Changes")
+
+class TeachingAssignmentForm(FlaskForm):
+    """Create or update a teacher-subject-section assignment."""
+
+    teacher_id = SelectField(
+        "Teacher",
+        coerce=int,
+        validators=[DataRequired(message="Please select a teacher.")],
+    )
+
+    subject_id = SelectField(
+        "Subject",
+        coerce=int,
+        validators=[DataRequired(message="Please select a subject.")],
+    )
+
+    class_id = SelectField(
+        "Class Section",
+        coerce=int,
+        validators=[DataRequired(message="Please select a class section.")],
+    )
+
+    is_active = BooleanField(
+        "Activate teaching assignment",
+        default=True,
+    )
+
+    submit = SubmitField("Save Teaching Assignment")

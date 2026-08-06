@@ -37,10 +37,12 @@ def seed_database() -> None:
             )
 
             class_section = ClassSection(
+                course="B.Tech",
                 name="CSE-AIML",
                 section="A",
                 semester=3,
                 academic_year="2026-27",
+                group_name="Group A",
             )
 
             subjects = [
@@ -80,12 +82,16 @@ def seed_database() -> None:
                     employee_id="TCH-001",
                     full_name="Demo Teacher One",
                     email="teacher1@example.local",
+                    designation="Assistant Professor",
+                    phone="9000000001",
                 ),
                 Teacher(
                     user=teacher_users[1],
                     employee_id="TCH-002",
                     full_name="Demo Teacher Two",
                     email="teacher2@example.local",
+                    designation="Lab Instructor",
+                    phone="9000000002",
                 ),
             ]
 

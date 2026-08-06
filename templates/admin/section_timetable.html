@@ -1,0 +1,375 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Section Timetable · Smart Classroom
+{% endblock %}
+
+{% block content %}
+<section class="dashboard-page">
+    <div class="dashboard-container">
+
+        <div class="page-heading-row">
+            <div>
+                <span class="role-badge role-admin">
+                    Administrator Panel
+                </span>
+
+                <h1>Section Timetable</h1>
+
+                <p>
+                    Select a programme and section to view its complete
+                    weekly timetable.
+                </p>
+            </div>
+
+            <div class="page-heading-actions">
+                <a
+                    class="secondary-button"
+                    href="{{ url_for('admin.timetable_list') }}"
+                >
+                    Timetable Management
+                </a>
+
+                <a
+                    class="primary-button"
+                    href="{{ url_for('admin.add_timetable') }}"
+                >
+                    Add Timetable Entry
+                </a>
+            </div>
+        </div>
+
+        <div class="management-form-card">
+            <form
+                method="GET"
+                action="{{ url_for('admin.section_timetable') }}"
+                class="management-form"
+            >
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label
+                            class="form-label"
+                            for="class_id"
+                        >
+                            Programme and Section
+                        </label>
+
+                        <select
+                            class="form-control"
+                            id="class_id"
+                            name="class_id"
+                            required
+                        >
+                            {% for class_section in class_sections %}
+                                <option
+                                    value="{{ class_section.id }}"
+                                    {% if
+                                        class_section.id
+                                        == selected_class_id
+                                    %}
+                                        selected
+                                    {% endif %}
+                                >
+                                    {{ class_section.name }}
+                                    · Section
+                                    {{ class_section.section }}
+                                    · Semester
+                                    {{ class_section.semester }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label
+                            class="form-label"
+                            for="week_start"
+                        >
+                            Week Beginning
+                        </label>
+
+                        <input
+                            class="form-control"
+                            id="week_start"
+                            name="week_start"
+                            type="date"
+                            value="{{ week_start.strftime('%Y-%m-%d') }}"
+                        >
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button
+                        class="primary-button"
+                        type="submit"
+                    >
+                        View Section Timetable
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        {% if selected_class %}
+            <div class="stats-grid">
+                <article class="stat-card">
+                    <span>Programme</span>
+
+                    <strong>
+                        {{ selected_class.name }}
+                    </strong>
+
+                    <p>
+                        Semester {{ selected_class.semester }}
+                    </p>
+                </article>
+
+                <article class="stat-card">
+                    <span>Section</span>
+
+                    <strong>
+                        {{ selected_class.section }}
+                    </strong>
+
+                    <p>
+                        Academic year
+                        {{ selected_class.academic_year }}
+                    </p>
+                </article>
+
+                <article class="stat-card">
+                    <span>Selected Week</span>
+
+                    <strong>
+                        {{ week_start.strftime('%d %b') }}
+                        –
+                        {{ week_end.strftime('%d %b') }}
+                    </strong>
+
+                    <p>
+                        Weekly recurring schedule
+                    </p>
+                </article>
+
+                <article class="stat-card">
+                    <span>Total Classes</span>
+
+                    <strong>
+                        {{ timetable_rows|length }}
+                    </strong>
+
+                    <p>
+                        Active and inactive entries
+                    </p>
+                </article>
+            </div>
+
+            <div class="dashboard-card">
+                <div class="dashboard-card-heading">
+                    <div>
+                        <h2>
+                            {{ selected_class.name }}
+                            · Section
+                            {{ selected_class.section }}
+                        </h2>
+
+                        <p>
+                            Weekly timetable from
+                            {{ week_start.strftime('%d %b %Y') }}
+                            to
+                            {{ week_end.strftime('%d %b %Y') }}.
+                        </p>
+                    </div>
+
+                    <div class="page-heading-actions">
+                        <a
+                            class="secondary-button"
+                            href="{{ url_for(
+                                'admin.section_timetable',
+                                class_id=selected_class.id,
+                                week_start=previous_week.strftime(
+                                    '%Y-%m-%d'
+                                )
+                            ) }}"
+                        >
+                            Previous Week
+                        </a>
+
+                        <a
+                            class="secondary-button"
+                            href="{{ url_for(
+                                'admin.section_timetable',
+                                class_id=selected_class.id,
+                                week_start=next_week.strftime(
+                                    '%Y-%m-%d'
+                                )
+                            ) }}"
+                        >
+                            Next Week
+                        </a>
+                    </div>
+                </div>
+
+                {% if timetable_rows %}
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Day</th>
+                                    <th>Date</th>
+                                    <th>Time</th>
+                                    <th>Subject</th>
+                                    <th>Teacher</th>
+                                    <th>Room</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {% for row in timetable_rows %}
+                                    <tr>
+                                        <td>
+                                            <strong>
+                                                {{ row.day }}
+                                            </strong>
+                                        </td>
+
+                                        <td>
+                                            {% if row.date %}
+                                                {{
+                                                    row.date.strftime(
+                                                        '%d %b %Y'
+                                                    )
+                                                }}
+                                            {% else %}
+                                                —
+                                            {% endif %}
+                                        </td>
+
+                                        <td>
+                                            <strong>
+                                                {{ row.start_time }}
+                                            </strong>
+
+                                            <br>
+
+                                            <small>
+                                                to {{ row.end_time }}
+                                            </small>
+                                        </td>
+
+                                        <td>
+                                            <strong>
+                                                {{ row.subject_name }}
+                                            </strong>
+
+                                            <br>
+
+                                            <small>
+                                                {{ row.subject_code }}
+                                            </small>
+                                        </td>
+
+                                        <td>
+                                            <strong>
+                                                {{ row.teacher_name }}
+                                            </strong>
+
+                                            <br>
+
+                                            <small>
+                                                {{ row.employee_id }}
+                                            </small>
+                                        </td>
+
+                                        <td>
+                                            {{ row.room }}
+                                        </td>
+
+                                        <td>
+                                            {% if row.is_active %}
+                                                <span
+                                                    class="
+                                                        table-status
+                                                        status-active
+                                                    "
+                                                >
+                                                    Active
+                                                </span>
+                                            {% else %}
+                                                <span
+                                                    class="
+                                                        table-status
+                                                        status-inactive
+                                                    "
+                                                >
+                                                    Inactive
+                                                </span>
+                                            {% endif %}
+                                        </td>
+
+                                        <td>
+                                            <a
+                                                class="table-action-link"
+                                                href="{{ url_for(
+                                                    'admin.edit_timetable',
+                                                    timetable_id=row.id
+                                                ) }}"
+                                            >
+                                                Edit
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="empty-state">
+                        <h3>No Timetable Entries</h3>
+
+                        <p>
+                            No timetable entries exist for
+                            {{ selected_class.name }}
+                            Section {{ selected_class.section }}.
+                        </p>
+
+                        <a
+                            class="primary-button"
+                            href="{{ url_for('admin.add_timetable') }}"
+                        >
+                            Add First Timetable Entry
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <h3>No Class Sections Available</h3>
+
+                <p>
+                    Create a class section before building its
+                    timetable.
+                </p>
+            </div>
+        {% endif %}
+
+        <div class="demo-account-note">
+            <h2>Section-specific Schedule</h2>
+
+            <p>
+                Every section has its own schedule. The teacher,
+                subject, day, time and room are loaded from the same
+                timetable records used by the Teacher Panel.
+            </p>
+
+            <p>
+                A teacher may teach several sections, but overlapping
+                class times for the same teacher are blocked by the
+                timetable conflict checker.
+            </p>
+        </div>
+
+    </div>
+</section>
+{% endblock %}

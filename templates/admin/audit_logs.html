@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block title %}Audit Logs · Smart Classroom{% endblock %}
+{% block content %}
+<section class="dashboard-page"><div class="dashboard-container">
+    <div class="page-heading-row"><div><span class="role-badge role-admin">Transparency</span><h1>Audit Logs</h1><p>Latest attendance, manual-review and management actions.</p></div><a class="secondary-button" href="{{ url_for('admin.attendance_records') }}">Attendance Records</a></div>
+    <div class="dashboard-card"><div class="dashboard-card-heading"><div><h2>Latest Actions</h2><p>Up to 500 local audit records.</p></div></div>{% if logs %}<div class="table-responsive"><table class="data-table"><thead><tr><th>Date and Time</th><th>User</th><th>Action</th><th>Session</th><th>Student</th><th>Details</th></tr></thead><tbody>{% for log in logs %}<tr><td>{{ log.created_at.strftime('%d %b %Y, %I:%M %p') }}</td><td>{{ log.user.username if log.user else 'System/Deleted User' }}</td><td>{{ log.action|replace('_',' ')|title }}</td><td>{{ log.session_id or '—' }}</td><td>{{ log.student.roll_number if log.student else '—' }}</td><td class="table-note">{{ log.details or '—' }}</td></tr>{% endfor %}</tbody></table></div>{% else %}<div class="empty-state"><h3>No Audit Logs</h3><p>Important actions will appear here.</p></div>{% endif %}</div>
+</div></section>
+{% endblock %}

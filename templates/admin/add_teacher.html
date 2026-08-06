@@ -186,6 +186,24 @@
                                 </p>
                             {% endfor %}
                         </div>
+
+                        <div class="form-group">
+                            {{ form.designation.label(class="form-label") }}
+                            {{ form.designation(class="form-control") }}
+                            {% for error in form.designation.errors %}<p class="form-error">{{ error }}</p>{% endfor %}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form.phone.label(class="form-label") }}
+                            {{ form.phone(class="form-control", placeholder="Optional phone number") }}
+                            {% for error in form.phone.errors %}<p class="form-error">{{ error }}</p>{% endfor %}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form.joining_date.label(class="form-label") }}
+                            {{ form.joining_date(class="form-control", type="date") }}
+                            {% for error in form.joining_date.errors %}<p class="form-error">{{ error }}</p>{% endfor %}
+                        </div>
                     </div>
                 </div>
 

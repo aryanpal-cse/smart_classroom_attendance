@@ -8,6 +8,7 @@ from models.manual_review import ManualReviewRequest
 from models.student import Student
 from models.subject import Subject
 from models.teacher import Teacher
+from models.teacher_attendance import TeacherAttendance
 from models.teaching_assignment import TeachingAssignment
 from models.timetable import Timetable
 from models.user import User
@@ -17,6 +18,7 @@ __all__ = [
     "User",
     "Student",
     "Teacher",
+    "TeacherAttendance",
     "ClassSection",
     "Subject",
     "TeachingAssignment",
