@@ -1726,6 +1726,68 @@ def student_management_home():
     )
 
 
+@admin_bp.get("/management/students/face-recognition")
+@role_required("admin")
+def student_face_recognition_status():
+    """Show face-registration readiness for every student."""
+    target = int(current_app.config["FACE_SAMPLE_TARGET"])
+    students = Student.query.order_by(
+        Student.roll_number.asc(),
+    ).all()
+
+    rows = []
+    for student in students:
+        face_data = student.face_data
+        class_section = student.class_section
+
+        rows.append(
+            {
+                "student": student,
+                "course": (
+                    class_section.course
+                    if class_section
+                    else "Not assigned"
+                ),
+                "branch": (
+                    class_section.name
+                    if class_section
+                    else "Not assigned"
+                ),
+                "section": (
+                    class_section.section
+                    if class_section
+                    else "—"
+                ),
+                "registered": bool(student.face_registered),
+                "sample_count": min(
+                    face_data.sample_count if face_data else 0,
+                    target,
+                ),
+                "trained": bool(
+                    face_data and face_data.is_trained
+                ),
+                "last_trained_at": (
+                    face_data.last_trained_at
+                    if face_data
+                    else None
+                ),
+            }
+        )
+
+    return render_template(
+        "admin/student_face_recognition.html",
+        rows=rows,
+        target=target,
+        total_students=len(rows),
+        registered_count=sum(
+            1 for row in rows if row["registered"]
+        ),
+        trained_count=sum(
+            1 for row in rows if row["trained"]
+        ),
+    )
+
+
 @admin_bp.get("/management/students/branches")
 @role_required("admin")
 def student_branch_selection():

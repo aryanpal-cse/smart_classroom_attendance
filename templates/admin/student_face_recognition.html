@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}Student Face Recognition Status · Smart Classroom{% endblock %}
+
+{% block content %}
+<section class="dashboard-page">
+    <div class="dashboard-container">
+        <div class="page-heading-row">
+            <div>
+                <span class="role-badge role-admin">Administrator Panel</span>
+                <h1>Student Face Recognition Status</h1>
+                <p>Review registration and local-model readiness without viewing or exporting face images.</p>
+            </div>
+            <div class="page-heading-actions">
+                <a class="secondary-button" href="{{ url_for('admin.student_management_home') }}">Student Management</a>
+                <a class="primary-button" href="{{ url_for('admin.student_list') }}">All Students</a>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <article class="stat-card"><span>Total Students</span><strong>{{ total_students }}</strong><p>Registered student profiles</p></article>
+            <article class="stat-card"><span>Face Registered</span><strong>{{ registered_count }}</strong><p>Students marked ready</p></article>
+            <article class="stat-card"><span>Model Trained</span><strong>{{ trained_count }}</strong><p>Students represented in the local model</p></article>
+            <article class="stat-card"><span>Registration Pending</span><strong>{{ total_students - registered_count }}</strong><p>Students who must capture samples</p></article>
+        </div>
+
+        <section class="dashboard-card section-gap">
+            <div class="dashboard-card-heading">
+                <div>
+                    <h2>Face Recognition Readiness</h2>
+                    <p>Students register their own face after logging in. Admin can review status only.</p>
+                </div>
+            </div>
+
+            {% if rows %}
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Student</th>
+                                <th>Course / Branch</th>
+                                <th>Section</th>
+                                <th>Samples</th>
+                                <th>Registration</th>
+                                <th>Model</th>
+                                <th>Last Trained</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in rows %}
+                                <tr>
+                                    <td><strong>{{ row.student.full_name }}</strong><br><small>{{ row.student.roll_number }}</small></td>
+                                    <td>{{ row.course }}<br><small>{{ row.branch }}</small></td>
+                                    <td>{{ row.section }}</td>
+                                    <td>{{ row.sample_count }}/{{ target }}</td>
+                                    <td>
+                                        <span class="table-status {{ 'status-active' if row.registered else 'status-inactive' }}">
+                                            {{ 'Registered' if row.registered else 'Pending' }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="table-status {{ 'status-active' if row.trained else 'status-inactive' }}">
+                                            {{ 'Trained' if row.trained else 'Not Ready' }}
+                                        </span>
+                                    </td>
+                                    <td>{{ row.last_trained_at.strftime('%d %b %Y %I:%M %p') if row.last_trained_at else '—' }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="empty-state"><h3>No Students Found</h3><p>Create student accounts before reviewing face-registration status.</p></div>
+            {% endif %}
+        </section>
+
+        <div class="feature-alert feature-alert-warning section-gap">
+            For privacy, this Admin page displays metadata only. Raw face samples must remain local and must not be committed to GitHub.
+        </div>
+    </div>
+</section>
+{% endblock %}

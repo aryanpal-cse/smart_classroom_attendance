@@ -8,6 +8,7 @@ from flask import (
     flash,
     redirect,
     render_template,
+    request,
     session as flask_session,
     url_for,
 )
@@ -624,6 +625,33 @@ def attendance():
     )
 
 
+@student_bp.get("/face-recognition")
+@role_required("student")
+def face_recognition_center():
+    """Display the logged-in student's local face-recognition center."""
+    student = load_student_profile()
+    face_data = student.face_data
+    target = int(current_app.config["FACE_SAMPLE_TARGET"])
+    stored_sample_count = face_data.sample_count if face_data else 0
+    sample_count = min(stored_sample_count, target)
+
+    return render_template(
+        "student/face_recognition.html",
+        student=student,
+        face_data=face_data,
+        sample_count=sample_count,
+        target=target,
+        progress=(
+            min(100, round(sample_count / target * 100))
+            if target
+            else 0
+        ),
+        registered=bool(student.face_registered),
+        trained=bool(face_data and face_data.is_trained),
+        model_exists=current_app.config["FACE_MODEL_PATH"].exists(),
+    )
+
+
 # =========================================================
 # Dynamic-code, face verification and manual review
 # =========================================================
@@ -676,6 +704,15 @@ def register_face():
     form = FaceCaptureForm()
     target = int(current_app.config["FACE_SAMPLE_TARGET"])
     face_data = student.face_data
+    stored_sample_count = face_data.sample_count if face_data else 0
+
+    if request.method == "POST" and stored_sample_count >= target:
+        flash(
+            "Face registration already has the required "
+            f"{target} samples. No additional sample was saved.",
+            "info",
+        )
+        return redirect(url_for("student.register_face"))
 
     if form.validate_on_submit():
         try:
@@ -695,6 +732,7 @@ def register_face():
                 )
                 db.session.add(face_data)
 
+            sample_count = min(sample_count, target)
             face_data.sample_count = sample_count
 
             if sample_count >= target:
@@ -736,7 +774,19 @@ def register_face():
             print("FACE REGISTRATION ERROR:", error)
             flash("The face sample could not be saved.", "danger")
 
-    sample_count = face_data.sample_count if face_data else 0
+    elif request.method == "POST":
+        errors = [
+            message
+            for field_errors in form.errors.values()
+            for message in field_errors
+        ]
+        flash(
+            errors[0] if errors else "No captured camera image was submitted.",
+            "danger",
+        )
+
+    stored_sample_count = face_data.sample_count if face_data else 0
+    sample_count = min(stored_sample_count, target)
 
     return render_template(
         "student/face_register.html",

@@ -86,9 +86,20 @@ def _extract_largest_face(image):
         minSize=(80, 80),
     )
 
+    # A second, slightly more tolerant pass helps ordinary laptop webcams
+    # without accepting frames that contain no detectable face at all.
+    if len(faces) == 0:
+        faces = detector.detectMultiScale(
+            grayscale,
+            scaleFactor=1.05,
+            minNeighbors=3,
+            minSize=(60, 60),
+        )
+
     if len(faces) == 0:
         raise FaceImageError(
-            "No clear face was detected. Face the camera in good lighting."
+            "No clear face was detected. Move closer, face the camera, "
+            "and use even front lighting."
         )
 
     x, y, width, height = max(faces, key=lambda box: box[2] * box[3])

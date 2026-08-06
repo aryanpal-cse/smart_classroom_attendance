@@ -2332,3 +2332,34 @@ body {
         min-height: 240px;
     }
 }
+
+/* Face camera capture status */
+.camera-status {
+    width: min(100%, 680px);
+    margin: 0 auto;
+    padding: 12px 14px;
+    border: 1px solid #d8e1ee;
+    border-radius: 10px;
+    color: #40506a;
+    background: #f7f9fd;
+    font-weight: 700;
+    text-align: center;
+}
+
+.camera-status[data-state="success"] {
+    color: #087a52;
+    border-color: #b9ead6;
+    background: #e8f9f1;
+}
+
+.camera-status[data-state="working"] {
+    color: #70510a;
+    border-color: #f0d690;
+    background: #fff8df;
+}
+
+.camera-status[data-state="error"] {
+    color: #a5263b;
+    border-color: #f2b9c3;
+    background: #fff0f3;
+}

@@ -56,7 +56,7 @@
             ></canvas>
 
             <form method="POST" id="cameraForm">
-                {{ form.hidden_tag() }}
+                {{ form.csrf_token }}
                 {{ form.image_data(id="imageData") }}
 
                 <div class="camera-controls">
@@ -98,6 +98,6 @@
 
 {% block scripts %}
 <script
-    src="{{ url_for('static', filename='js/camera_capture.js') }}"
+    src="{{ url_for('static', filename='js/camera_capture.js') }}?v=3"
 ></script>
 {% endblock %}

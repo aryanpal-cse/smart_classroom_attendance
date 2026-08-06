@@ -56,6 +56,11 @@
                         <a class="feature-option-button" href="{{ url_for('admin.section_timetable') }}">Open Timetables</a>
                     </article>
                     <article class="feature-option-card">
+                        <div class="feature-option-icon" aria-hidden="true">F</div>
+                        <div><h3>Face Recognition Status</h3><p>Check which students have registered samples and a trained local model.</p></div>
+                        <a class="feature-option-button" href="{{ url_for('admin.student_face_recognition_status') }}">Open Face Status</a>
+                    </article>
+                    <article class="feature-option-card">
                         <div class="feature-option-icon" aria-hidden="true">R</div>
                         <div><h3>Attendance Records</h3><p>Review and correct individual attendance entries.</p></div>
                         <a class="feature-option-button" href="{{ url_for('admin.attendance_records') }}">Open Records</a>

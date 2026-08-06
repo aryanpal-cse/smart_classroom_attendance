@@ -75,3 +75,11 @@
 - All referenced templates and route endpoints were found.
 - SQLite `PRAGMA integrity_check` returned `ok`.
 - Webcam/OpenCV recognition must still be tested on the user's Windows PC.
+## Face Recognition Section Update
+
+- Added a dedicated Student Face Recognition Center at `/student/face-recognition`.
+- Added separate dashboard access for face registration, class-code verification and recognition attendance history.
+- Added an Admin face-registration readiness page at `/admin/management/students/face-recognition`.
+- Admin sees metadata only; raw face images remain local and private.
+- Face verification still requires a valid temporary class code before attendance can be recorded.
+

@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %}Face Recognition · Smart Classroom{% endblock %}
+
+{% block content %}
+<section class="dashboard-page">
+    <div class="dashboard-container">
+        <div class="page-heading-row">
+            <div>
+                <span class="role-badge role-student">Local AI Attendance</span>
+                <h1>Face Recognition Center</h1>
+                <p>
+                    Register your face locally, review readiness and use
+                    face verification after entering a teacher's live-class code.
+                </p>
+            </div>
+            <div class="page-heading-actions">
+                <a class="secondary-button" href="{{ url_for('student.dashboard') }}">Student Dashboard</a>
+                <a class="primary-button" href="{{ url_for('student.register_face') }}">
+                    {{ 'Update Face Samples' if registered else 'Register My Face' }}
+                </a>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <article class="stat-card">
+                <span>Registration</span>
+                <strong>{{ 'Completed' if registered else 'Required' }}</strong>
+                <p>Linked only to {{ student.full_name }}</p>
+            </article>
+            <article class="stat-card">
+                <span>Captured Samples</span>
+                <strong>{{ sample_count }}/{{ target }}</strong>
+                <p>Small angle changes improve local recognition</p>
+            </article>
+            <article class="stat-card">
+                <span>LBPH Training</span>
+                <strong>{{ 'Ready' if trained else 'Not Ready' }}</strong>
+                <p>OpenCV contrib recognizer</p>
+            </article>
+            <article class="stat-card">
+                <span>Model File</span>
+                <strong>{{ 'Available' if model_exists else 'Pending' }}</strong>
+                <p>Stored only in the local project</p>
+            </article>
+        </div>
+
+        <section class="dashboard-card section-gap" aria-labelledby="face-actions-heading">
+            <div class="dashboard-card-heading">
+                <div>
+                    <h2 id="face-actions-heading">Face Recognition Features</h2>
+                    <p>Registration and attendance verification remain separate and secure.</p>
+                </div>
+            </div>
+
+            <div class="feature-option-grid">
+                <article class="feature-option-card">
+                    <div class="feature-option-icon" aria-hidden="true">R</div>
+                    <div>
+                        <h3>Register or Update Face</h3>
+                        <p>Capture local camera samples for the logged-in student account.</p>
+                    </div>
+                    <a class="feature-option-button" href="{{ url_for('student.register_face') }}">
+                        {{ 'Update Samples' if registered else 'Start Registration' }}
+                    </a>
+                </article>
+
+                <article class="feature-option-card">
+                    <div class="feature-option-icon" aria-hidden="true">V</div>
+                    <div>
+                        <h3>Verify for Attendance</h3>
+                        <p>Enter an active class code first, then complete live camera verification.</p>
+                    </div>
+                    <a class="feature-option-button" href="{{ url_for('student.join_class') }}">Enter Class Code</a>
+                </article>
+
+                <article class="feature-option-card">
+                    <div class="feature-option-icon" aria-hidden="true">A</div>
+                    <div>
+                        <h3>Recognition Attendance</h3>
+                        <p>Review attendance recorded through face recognition or manual review.</p>
+                    </div>
+                    <a class="feature-option-button" href="{{ url_for('student.attendance') }}">Open Attendance</a>
+                </article>
+            </div>
+        </section>
+
+        <section class="dashboard-card section-gap">
+            <div class="dashboard-card-heading">
+                <div>
+                    <h2>Attendance Verification Flow</h2>
+                    <p>The system does not allow face verification to bypass the temporary class code.</p>
+                </div>
+            </div>
+            <div class="dashboard-action-grid hierarchy-card-grid">
+                <article class="dashboard-action-card compact-action-card"><div><span class="card-kicker">Step 1</span><h3>Teacher Starts Class</h3><p>A temporary six-character code is generated.</p></div></article>
+                <article class="dashboard-action-card compact-action-card"><div><span class="card-kicker">Step 2</span><h3>Student Enters Code</h3><p>The system confirms the student belongs to that class.</p></div></article>
+                <article class="dashboard-action-card compact-action-card"><div><span class="card-kicker">Step 3</span><h3>Face Verification</h3><p>Local OpenCV LBPH compares the live capture with registered samples.</p></div></article>
+                <article class="dashboard-action-card compact-action-card"><div><span class="card-kicker">Step 4</span><h3>Attendance Result</h3><p>A match records attendance; a failure can enter teacher manual review.</p></div></article>
+            </div>
+        </section>
+
+        <div class="feature-alert feature-alert-warning section-gap">
+            Face images and the trained model stay in the local <strong>face_data</strong> folder.
+            Do not include real student images in a public repository or submission ZIP.
+        </div>
+    </div>
+</section>
+{% endblock %}

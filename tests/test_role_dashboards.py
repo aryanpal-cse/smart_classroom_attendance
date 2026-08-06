@@ -57,6 +57,7 @@ class RoleDashboardTestCase(unittest.TestCase):
             "/student/subjects",
             "/student/timetable",
             "/student/attendance",
+            "/student/face-recognition",
         ]:
             response = self.client.get(path)
             self.assertEqual(response.status_code, 200, path)
@@ -83,6 +84,14 @@ class RoleDashboardTestCase(unittest.TestCase):
         )
         self.assertEqual(branches.status_code, 200)
         self.assertIn(b"CSE-AIML", branches.data)
+
+    def test_admin_face_recognition_status_page(self) -> None:
+        self.login("admin", "Admin@123")
+        response = self.client.get(
+            "/admin/management/students/face-recognition"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b"Student Face Recognition Status", response.data)
 
     def test_teacher_attendance_pages_are_role_protected(self) -> None:
         self.login("teacher1", "Teacher@123")

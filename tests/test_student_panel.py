@@ -112,6 +112,14 @@ class StudentPanelTestCase(unittest.TestCase):
             response.data,
         )
 
+    def test_face_recognition_center_opens(self) -> None:
+        """The student should see a dedicated face-recognition section."""
+        self.login_as_student()
+        response = self.client.get("/student/face-recognition")
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b"Face Recognition Center", response.data)
+        self.assertIn(b"Register or Update Face", response.data)
+
     def test_admin_cannot_access_student_panel(self) -> None:
         """An administrator should not access student-only pages."""
         login_response = self.login(
